@@ -13,19 +13,28 @@
 }?>
 <? if(isset($_POST['manpcv'])){
  $_SESSION['labbot3d']['manpcv'] = 0;
+ $cmd = 'mosquitto_pub -t "labbot" -m "heatoff"';
+ exec($cmd);
+ sleep(0.5);
  $cmd = 'mosquitto_pub -t "labbot" -m "manpcv"';
  exec($cmd);
  echo "<meta http-equiv='refresh' content='0'>";
 }?>
 <? if(isset($_POST['feedbackpcv'])){
  $_SESSION['labbot3d']['manpcv'] = 1;
+ $_SESSION['heatval'] = $_POST['heatval'];
  $jsonmicrofl['sensorvalue'] = $_POST['setlevel'];
+ $cmd = 'mosquitto_pub -t "labbot" -m "heatval '.$_SESSION['heatval'].'"';
+ exec($cmd);
+ sleep(0.5);
+ $cmd = 'mosquitto_pub -t "labbot" -m "heaton"';
+ exec($cmd);
+ sleep(0.5);
  $cmd = 'mosquitto_pub -t "labbot" -m "setlevelval '.$_POST['setlevel'].'"';
  exec($cmd);
  sleep(1);
  $cmd = 'mosquitto_pub -t "labbot" -m "feedbackpcv"';
  exec($cmd);
-
  file_put_contents('microfluidics.json', json_encode($jsonmicrofl));
  $jsonmicrofl = json_decode(file_get_contents('microfluidics.json'), true);
  echo "<meta http-equiv='refresh' content='0'>";
@@ -188,13 +197,24 @@
 <div class="col-sm-4">
 <form action=<?=$_SERVER['PHP_SELF']?> method=post><font size=2>
 <? if(!isset($_SESSION['labbot3d']['manpcv'])){$_SESSION['labbot3d']['manpcv'] = 0;}?>
+<? if(!isset($_SESSION['heatval'])){$_SESSION['heatval'] = 100;}?>
 <? if($_SESSION['labbot3d']['manpcv'] == 0) { ?>
-<table><tr>
+<table>
+<tr>
 <td><font size=1><b>Sensor</b></font> </td>
 </tr>
 <tr>
 <td><input type=text name=setlevel value="<?=$jsonmicrofl['sensorvalue']?>" size=3  style="text-align:right;font-size:10px;"> &nbsp;&nbsp;</td>
 </tr>
+<tr>
+<td><font size=1><b>Heat</b></font> </td>
+</tr>
+<tr>
+<td><input type=text name=heatval value="<?=$_SESSION['heatval']?>" size=3  style="text-align:right;font-size:10px;"> &nbsp;&nbsp;</td>
+</tr>
+
+
+
 </table>
 <button type="submit" name=feedbackpcv value="feedbackpcv"  class="btn btn-warning btn-sm">Feedback on</button><br>
 <? } else { ?>
@@ -204,7 +224,9 @@
   <? include('mqtt.sub.js.inc.php'); ?> 
 </div>
 <div class="col-sm-1">
-<table><tr><td><font size=1><b>Sensor</b></font></td></tr><tr><td><b><font size=1><div style="font-weight:bold" id="<?=$mqttset['divmsg']?>"> C </b></div></font></td></tr>
+<table>
+<tr><td><font size=1><b>Sensor</b></font></td></tr>
+<tr><td><b><font size=1><div style="font-weight:bold" id="<?=$mqttset['divmsg']?>"> C </b></div></font></td></tr>
 <tr><td><font size=1><b>Feedback<br><?=$jsonmicrofl['sensorvalue']?></b></font></td></tr>
 </table>
 

@@ -135,8 +135,10 @@ def runeachmacrocmd(cmd,dser,aser,kit):
      #dser.write(b'M106 P0 I0 F25000 \n')
      dser.write(cmd.encode()+"\n".encode())
    if re.match("^sg.*",cmd):
-     print(re.sub("s", "", cmd)+"\n")
-     #sser.write(re.sub("syringe ", "", cmd).encode()+"\n".encode())
+     ps,tt = re.split("_", re.sub("^s", "", cmd))
+     print(ps)
+     sser.write(ps.encode()+"\n".encode())
+     time.sleep(float(tt))
 
 def putmacrolinestogether(reformatmacro):
  macrorunready = []
@@ -715,6 +717,10 @@ dser.write(b'M307 H1 A240 C640 D5.5 V12\n')
 time.sleep(0.5)
 dser.write(b'M307 H2 A240 C640 D5.5 V12\n')
 time.sleep(0.5)
+aser.write(b'heatoff\n')
+time.sleep(0.5)
+
+
 
 kit = servoset()
 #runmacro(dser,aser)

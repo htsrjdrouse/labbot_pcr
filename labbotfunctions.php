@@ -59,9 +59,9 @@
 
 <? function syringe($cmdlist,$labbotprogramjson){ 
  if ($labbotprogramjson['mesg'] == "homing syringe"){
-	 $line = "sg28e0";
+	 $line = "sg28e0_".$labbotprogramjson['syringetime'];
  } else {
-	 $line = "sg1e".$labbotprogramjson['microliter']."s".$labbotprogramjson['syringespeed']."a".$labbotprogramjson['syringeacceleration'];
+	 $line = "sg1e".$labbotprogramjson['microliter']."s".$labbotprogramjson['syringespeed']."a".$labbotprogramjson['syringeacceleration']."_".$labbotprogramjson['syringetime'];
  }
  //echo $line."<br>";
  array_push($cmdlist,$line);

@@ -80,6 +80,7 @@ if (isset($_POST['syringesubmitstep'])){
   "microliter"=>$_POST['microliter'],
   "syringespeed"=>$_POST['syringespeed'],
   "syringeacceleration"=>$_POST['syringeacceleration'],
+  "syringetime"=>$_POST['syringetime'],
   "homesyringe"=>$_POST['homesyringe'],
   "mesg" => $msg
  ));
