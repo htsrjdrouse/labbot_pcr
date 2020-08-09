@@ -29,6 +29,12 @@
 
 </head>
 
+<? if (!(isset($_SESSION['labbotjson']))){ 
+ $dir = scandir("uploads/");
+ array_shift($dir);
+ array_shift($dir);
+ $_SESSION['objectsactive'] = $dir[0];
+} ?>
 
 <? if (!(isset($_SESSION['labbotjson']))){ 
  $_SESSION['labbotjson'] = json_decode(file_get_contents('labbot.objects.json'), true);

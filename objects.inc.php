@@ -1,6 +1,9 @@
 <div class="row">
-<div class="col-sm-8">
-<h2>Objects</h2>
+<div class="col-sm-4">
+<h2>Objects</h2> 
+</div>
+<div class="col-sm-4">
+<br><?=$_SESSION['objectsactive']?>
 </div>
 </div>
 <div class="row">
@@ -18,6 +21,11 @@
 <? }?>
 <? }?>
  </select> 
+<br>
+ <button type="submit" name=saveobjects class="btn btn-success">Save objects</button>
+ &nbsp;
+<a class="btn btn-primary" href="objects.json.php" role="button">Manage objects files</a>
+
 </div>
 <div class="col-sm-4">
  <button type="submit" name=selecttarget class="btn btn-primary">Select</button>
@@ -30,7 +38,6 @@
  &nbsp;
  &nbsp;
  &nbsp;
- <button type="submit" name=exportjson class="btn btn-success">Export JSON</button>
 </form>
 <br>
 </div>

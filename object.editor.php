@@ -22,6 +22,12 @@ if (isset($_POST['resettarget'])){
  header("Location: index.php");
 }
 
+if (isset($_POST['saveobjects'])){
+ //$_SESSION['labbotjson'] = json_decode(file_get_contents('labbot.objects.json'), true);
+ file_put_contents('nx.imgdataset.json', json_encode($_SESSION['labbotjson']));
+ header("Location: index.php");
+}
+
 
 
 
