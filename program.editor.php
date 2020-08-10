@@ -2,6 +2,39 @@
 <? include('functionslib.php'); ?>
 <? include('labbotfunctions.php'); ?>
 <?
+if (isset($_POST['pipettewashsubmitstep'])){ 
+ unset($_SESSION['labbotprogramjson']);
+ $_SESSION['labbotprogramjson'] = json_decode(file_get_contents('labbot.programs.json'), true);
+ if(!isset($_SESSION['labbotprogramjson'])){
+  $_SESSION['labbotprogramjson'] = array();
+ }
+
+ $pipettelist = "";
+ for($i=1;$i<9;$i++){
+   if($i==8){
+	   if(isset($_POST['pipette'.$i])){$pipettelist = $pipettelist."1";} else { $pipettelist = $pipettelist."0";}
+   } else {
+	   if(isset($_POST['pipette'.$i])){$pipettelist = $pipettelist."1_";} else { $pipettelist = $pipettelist."0_";}
+   }
+ }
+ array_push($_SESSION['labbotprogramjson'], array(
+  "tasktype"=>"pipettewash",
+  "pipettewashvol"=>$_POST['pipettewashvol'],
+  "pipettewashtime"=>$_POST['pipettewashtime'],
+  "pipettewashcycles"=>$_POST['pipettewashcycles'],
+  "feedrate"=>$_POST['feedrate'],
+  "object"=>'wash station',
+  "zheight"=>$_POST['zheight'],
+  "row"=>$_POST['row'],
+  "pipettelist"=>$pipettelist,
+  "dryafterwash"=>$_POST['dryafterwash'],
+  "drypadtime"=>$_POST['drypadtime'],
+  "mesg"=>"wash pipettes object ".$_POST['targetlist']." ".$_POST['pipettewashvol']." microl cycles ".$_POST['pipettwashcycles']." dry ".$_POST['dryafterwash']
+ ));
+ closejson($_SESSION['labbotprogramjson'],'labbot.programs.json');
+ header("Location: index.php");
+}
+
 if (isset($_POST['ejectpipettes'])){ 
  unset($_SESSION['labbotprogramjson']);
  $_SESSION['labbotprogramjson'] = json_decode(file_get_contents('labbot.programs.json'), true);
@@ -187,6 +220,10 @@ if (isset($_POST['displaymacro'])){
      $cmdlist = turnonac($cmdlist);
      displaymacro($cmdlist);
   }
+  if($labbotprogramjson[$mm]['tasktype'] == "pipettewash"){
+    $cmdlist = pipettewash($cmdlist, $labbotprogramjson[$mm]);
+    displaymacro($cmdlist);
+  }
   if($labbotprogramjson[$mm]['tasktype'] == "motion"){
     $cmdlist = motion($cmdlist, $labbotprogramjson[$mm]);
      displaymacro($cmdlist);
@@ -226,6 +263,9 @@ if (isset($_POST['editmacro'])){
   array_push($cmdlist,"//".$labbotprogramjson[$mm]['mesg']);
   if($labbotprogramjson[$mm]['tasktype'] == "telnetcommand"){
      $cmdlist = turnonac($cmdlist);
+  }
+  if($labbotprogramjson[$mm]['tasktype'] == "pipettewash"){
+    $cmdlist = pipettewash($cmdlist, $labbotprogramjson[$mm]);
   }
   if($labbotprogramjson[$mm]['tasktype'] == "motion"){
     $cmdlist = motion($cmdlist, $labbotprogramjson[$mm]);

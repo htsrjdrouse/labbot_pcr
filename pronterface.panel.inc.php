@@ -8,7 +8,7 @@
     	  <area shape="rect" coords="220,30,245,48" href="move.inc.php?id=movezpos10" alt="Sun">
     	  <area shape="rect" coords="220,52,245,70" href="move.inc.php?id=movezpos1" alt="Sun">
     	  <area shape="rect" coords="220,74,245,92" href="move.inc.php?id=movezpos0.1" alt="Sun">
-    	  <area shape="rect" coords="220,102,245,120" href="move.inc.php?id=movezneg0.1" alt="Sun">
+	  <area shape="rect" coords="220,102,245,120" href="move.inc.php?id=movezneg0.1" alt="Sun">
     	  <area shape="rect" coords="220,124,245,138" href="move.inc.php?id=movezneg1" alt="Sun">
     	  <area shape="rect" coords="220,144,245,162" href="move.inc.php?id=movezneg10" alt="Sun">
     	  <area shape="rect" coords="90,66,108,76" href="move.inc.php?id=moveypos0.1" alt="Sun">

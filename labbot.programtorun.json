@@ -1,1 +1,1 @@
-{"program":["\/\/homing syringe\r","sg28e0_1\r","\/\/syringe 10 speed 1000 acc 500\r","sg1e10s1000a500_3\r",""]}
+["\/\/motion wash station zh 0 row 1 F3000","G1X136Y59F3000","G1Z60F3000","\/\/valve-1_1_1_1_1_1_1_1-valveinput","valve-1_1_1_1_1_1_1_1-input","\/\/homing syringe","sg28e0_6","\/\/wash 1 on","washon","\/\/waste 2 on","dryon","\/\/syringe 200 speed 1000 acc 500","sg1e200s1000a500_6","\/\/valve-1_0_0_0_0_0_0_0-valveoutput","valve-1_0_0_0_0_0_0_0-output"]

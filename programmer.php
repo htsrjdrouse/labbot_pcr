@@ -2,9 +2,45 @@
 <h2> Build Macros</h2>
 <br>
 <form action=program.editor.php method=post>
+ <div class="col-sm-2">
+ <b>Wash pipettes</b><br>
+ </div>
+ <div class="col-sm-3">
+ <b>Pipettes</b><br>
+  <? for($i=1;$i<9;$i++){ ?>
+  <?=$i?><input type=checkbox name=pipettes<?=$i?> checked>
+ <?if($i == 4){ ?> <br><? } ?>
+  <? } ?>
+ </div>
+ <div class="col-sm-2">
+ <b>Microliter</b><br>
+ <?if(!isset($_SESSION['pipettewashvol'])){ $_SESSION['pipettewashvol'] = 200;}?>
+ <?if(!isset($_SESSION['pipettewashtime'])){ $_SESSION['pipettewashtime'] = 5;}?>
+ <?if(!isset($_SESSION['drypadbool'])){ $_SESSION['drypadbool'] = "checked";}?>
+ <?if(!isset($_SESSION['drypadtime'])){ $_SESSION['drypadtime'] = 1;}?>
+ <?if(!isset($_SESSION['pipettewashcycles'])){ $_SESSION['pipettewashcycles'] = 4;}?>
+ <input type=text name=pipettewashvol size=3 value=<?=$_SESSION['pipettewashvol']?>>
+ <br>
+ <b>Time</b><br>
+ <input type=text name=pipettewashtime size=2 value=<?=$_SESSION['pipettewashtime']?>>
+ </div>
+ <div class="col-sm-3">
+ <b>Cycles</b><br>
+ <input type=text name=pipettewashcycles size=2 value=<?=$_SESSION['pipettewashcycles']?>>
+ <br>
+ <b>Dry after wash</b> <input type=checkbox name=dryafterwash <?=$_SESSION['drypadbool']?>>
+ <br>
+ <b>Dry time</b> <input type=text name=drypadtime value=<?=$_SESSION['drypadtime']?> size=1>
+ </div>
+ <div class="col-sm-2"> 
+ <button type="submit" name=pipettewashsubmitstep class="btn-xs btn-success">Insert step</button>
+ </div>
+
+
  <div class="col-sm-12">
  <b>Motion</b><br>
  </div>
+
  <div class="col-sm-5">
  <? $size=count($_SESSION['labbotjson']['types'][0]); if ($size > 11) { $size = 10;} ?>
  <select class="form-control form-control-sm" name="targetlist" size=<?=$size?>>

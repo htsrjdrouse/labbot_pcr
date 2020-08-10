@@ -1,3 +1,6 @@
+<? if (!isset($_SESSION['labbotprogramjson'])){
+   $_SESSION['labbotprogramjson'] = json_decode(file_get_contents('labbot.programs.json'), true);
+} ?>
 
 <? function eject($cmdlist,$labbotprogramjson){ 
     foreach($_SESSION['labbotjson']['types'][0] as $tt){
@@ -20,14 +23,12 @@
  return $cmdlist; 
 } ?>
 
+
 <? function turnonac($cmdlist){ ?>
-<br>
 <? array_push($cmdlist,"M118 turnonac"); ?>
 <? return $cmdlist; ?>
 <? } ?>
-<? if (!isset($_SESSION['labbotprogramjson'])){
-   $_SESSION['labbotprogramjson'] = json_decode(file_get_contents('labbot.programs.json'), true);
-} ?>
+
 
 <? function motion($cmdlist,$labbotprogramjson){ ?>
 <? foreach($_SESSION['labbotprogramjson'] as $tt) { 
@@ -56,6 +57,54 @@
   array_push($cmdlist, $line);
   return $cmdlist; 
  } ?>
+
+<? function pipettewash($cmdlist,$labbotprogramjson){ 
+ foreach($_SESSION['labbotjson']['types'][0] as $tt) { 
+  if ($tt['name'] == 'wash station'){
+   $coord = $tt;
+  }
+ } 
+  $cmdlist = motion($cmdlist,$labbotprogramjson);
+  for($i=0;$i<$labbotprogramjson['pipettewashcycles'];$i++){
+  array_push($cmdlist,"G1Z".($coord['ztrav']-$labbotprogramjson['zheight'])."F".$labbotprogramjson['feedrate']);
+  //set all valves to input 
+  array_push($cmdlist,"//set all valves to input");
+  array_push($cmdlist,"valve-1_1_1_1_1_1_1_1-valveinput");
+  //wasteon
+  array_push($cmdlist,"wasteon");
+  //washon
+  array_push($cmdlist,"washon");
+  //aspirate syinge 
+  array_push($cmdlist,"sg1e".$labbotprogramjson['pipettewashvol']."s1000a500_".$labbotprogramjson['pipettewashtime']);
+  //move select valves to output
+  //"pipettelist"=>$pipettelist,
+  array_push($cmdlist,"valve-".$labbotprogramjson['pipettelist']."-valveoutput");
+  //dispense home for dispensing
+  array_push($cmdlist,"sg28e0_".$labbotprogramjson['pipettewashtime']);
+  if ($i == ($labbotprogramjson['pipettewashcycles'] - 1)){
+   //washon
+   array_push($cmdlist,"washoff");
+   //wasteon
+   array_push($cmdlist,"wasteoff");
+   array_push($cmdlist,"//set all valves to bypass");
+   array_push($cmdlist,"valve-1_1_1_1_1_1_1_1-valvebypass");
+   if ($labbotprogramjson['dryafterwash'] == "on"){
+    $labbotprogramjson['object'] = "drypad";
+    foreach($_SESSION['labbotjson']['types'][0] as $tt) { 
+     if ($tt['name'] == 'drypad'){
+      $coord = $tt;
+      }
+     }  
+     array_push($cmdlist,"G1Z".$coord['ztrav']);
+     $cmdlist = motion($cmdlist,$labbotprogramjson);
+     array_push($cmdlist,"G1Z".$coord['Z'].'_'.$labbotprogramjson['drypadtime']);
+     array_push($cmdlist,"G1Z".$coord['ztrav']);
+    }
+   }
+  }
+ return $cmdlist;
+ }
+?>
 
 <? function syringe($cmdlist,$labbotprogramjson){ 
  if ($labbotprogramjson['mesg'] == "homing syringe"){

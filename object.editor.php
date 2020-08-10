@@ -24,10 +24,9 @@ if (isset($_POST['resettarget'])){
 
 if (isset($_POST['saveobjects'])){
  //$_SESSION['labbotjson'] = json_decode(file_get_contents('labbot.objects.json'), true);
- file_put_contents('nx.imgdataset.json', json_encode($_SESSION['labbotjson']));
+ file_put_contents('uploads/'.$_SESSION['objectsactive'], json_encode($_SESSION['labbotjson']));
  header("Location: index.php");
 }
-
 
 
 

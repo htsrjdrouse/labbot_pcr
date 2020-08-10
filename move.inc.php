@@ -118,6 +118,23 @@
    file_put_contents('nx.imgdataset.json', json_encode($jsonimg));
    echo "<meta http-equiv='refresh' content='0'>";
   } 
+
+  if (preg_match('/^homexyz/', $_GET['id'])){
+   $jsonimg['currcoord']['X'] = 0; 
+   $cmd = 'mosquitto_pub -t "labbot" -m "G28 Z0"';
+   exec($cmd);
+   sleep(0.5);
+   $cmd = 'mosquitto_pub -t "labbot" -m "G28 X0"';
+   exec($cmd);
+   sleep(0.5);
+   $cmd = 'mosquitto_pub -t "labbot" -m "G28 Y0"';
+   exec($cmd);
+   sleep(0.5);
+   file_put_contents('nx.imgdataset.json', json_encode($jsonimg));
+   echo "<meta http-equiv='refresh' content='0'>";
+  } 
+
+
   if (preg_match('/^homey/', $_GET['id'])){
    $jsonimg['currcoord']['Y'] = 0; 
    $cmd = 'mosquitto_pub -t "labbot" -m "G28 Y0"';

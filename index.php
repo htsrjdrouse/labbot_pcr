@@ -34,11 +34,9 @@
  array_shift($dir);
  array_shift($dir);
  $_SESSION['objectsactive'] = $dir[0];
+ $_SESSION['labbotjson'] = json_decode(file_get_contents('uploads/'.$_SESSION['objectsactive']), true);
 } ?>
 
-<? if (!(isset($_SESSION['labbotjson']))){ 
- $_SESSION['labbotjson'] = json_decode(file_get_contents('labbot.objects.json'), true);
-} ?>
  
 <? $types = ($_SESSION['labbotjson']['types']);?>
 <? $groups = ($_SESSION['labbotjson']['groups']);?>

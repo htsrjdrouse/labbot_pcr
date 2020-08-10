@@ -4,7 +4,7 @@
  <? $indetype = $types[0][$_SESSION['labbotjson']['targettrack']]; ?>
 <input type=hidden name=targetlist value=<?=$_SESSION['labbotjson']['targettrack']?> >
 <br>
-<button type="submit" name=addtarget class="btn btn-warning">Add Target</button>
+<button type="submit" name=addtarget class="btn btn-warning">Add target</button>
  &nbsp; &nbsp; &nbsp; 
 <!--<button type="submit" name=generatetargetgroup class="btn btn-success">Generate Target Group</button>-->
 &nbsp; &nbsp; &nbsp;
