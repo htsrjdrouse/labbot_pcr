@@ -50,6 +50,24 @@ if (isset($_POST['ejectpipettes'])){
  header("Location: index.php");
 
 }
+if (isset($_POST['loadpipettes'])){ 
+ unset($_SESSION['labbotprogramjson']);
+ $_SESSION['labbotprogramjson'] = json_decode(file_get_contents('labbot.programs.json'), true);
+ if(!isset($_SESSION['labbotprogramjson'])){
+  $_SESSION['labbotprogramjson'] = array();
+ }
+ array_push($_SESSION['labbotprogramjson'], array(
+  "tasktype"=>"loadpipettes",
+  "object"=>$_POST['targetlist'],
+  "row"=>$_POST['row'],
+  "zheight"=>$_POST['zheight'],
+  "feedrate"=>$_POST['feedrate'],
+  "mesg"=>"load pipettes row ".$_POST['row']
+ ));
+ closejson($_SESSION['labbotprogramjson'],'labbot.programs.json');
+ header("Location: index.php");
+}
+
 if (isset($_POST['motionsubmitstep'])){ 
  unset($_SESSION['labbotprogramjson']);
  $_SESSION['labbotprogramjson'] = json_decode(file_get_contents('labbot.programs.json'), true);
@@ -224,6 +242,10 @@ if (isset($_POST['displaymacro'])){
     $cmdlist = pipettewash($cmdlist, $labbotprogramjson[$mm]);
     displaymacro($cmdlist);
   }
+  if($labbotprogramjson[$mm]['tasktype'] == "loadpipettes"){
+    $cmdlist = loadpipettes($cmdlist, $labbotprogramjson[$mm]);
+    displaymacro($cmdlist);
+  }
   if($labbotprogramjson[$mm]['tasktype'] == "motion"){
     $cmdlist = motion($cmdlist, $labbotprogramjson[$mm]);
      displaymacro($cmdlist);
@@ -266,6 +288,9 @@ if (isset($_POST['editmacro'])){
   }
   if($labbotprogramjson[$mm]['tasktype'] == "pipettewash"){
     $cmdlist = pipettewash($cmdlist, $labbotprogramjson[$mm]);
+  }
+  if($labbotprogramjson[$mm]['tasktype'] == "loadpipettes"){
+    $cmdlist = loadpipettes($cmdlist, $labbotprogramjson[$mm]);
   }
   if($labbotprogramjson[$mm]['tasktype'] == "motion"){
     $cmdlist = motion($cmdlist, $labbotprogramjson[$mm]);

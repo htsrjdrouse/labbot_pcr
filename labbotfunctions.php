@@ -29,6 +29,27 @@
 <? return $cmdlist; ?>
 <? } ?>
 
+<? function loadpipettes($cmdlist,$labbotprogramjson){ 
+ if (preg_match("/^pipette tip.*$/", $labbotprogramjson['object'])){
+  foreach($_SESSION['labbotprogramjson'] as $tt) { 
+   if (isset($tt['object'])){
+    if ($tt['mesg'] == $labbotprogramjson['mesg']){
+     $obj = $tt['object'];
+    }
+   }
+  } 
+  foreach($_SESSION['labbotjson']['types'][0] as $tt) { 
+   if ($tt['name'] == $obj){
+    $coord = $tt;
+   }
+  }
+  array_push($cmdlist, "G1Z".($coord['ztrav']."F".$labbotprogramjson['feedrate']));
+  array_push($cmdlist, "G1X".($coord['posx']+$coord['marginx'])."Y".($coord['posy']+$coord['wellrowsp']*$labbotprogramjson['row']+$coord['marginy'])."F".$labbotprogramjson['feedrate']);
+  array_push($cmdlist, "G1Z".($coord['Z']-$labbotprogramjson['zheight'])."F".$labbotprogramjson['feedrate']);
+ }
+  return $cmdlist; 
+}
+?>
 
 <? function motion($cmdlist,$labbotprogramjson){ ?>
 <? foreach($_SESSION['labbotprogramjson'] as $tt) { 
@@ -45,9 +66,10 @@
   } ?>
  <? 
   //echo "G1 X".$coord['posx']." Y".($coord['posy']+$coord['wellrowsp']*$labbotprogramjson['row'])." F".$labbotprogramjson['feedrate']."<br>"; 
+  array_push($cmdlist, "G1Z".($coord['ztrav']."F".$labbotprogramjson['feedrate']));
   array_push($cmdlist, "G1X".($coord['posx']+$coord['marginx'])."Y".($coord['posy']+$coord['wellrowsp']*$labbotprogramjson['row']+$coord['marginy'])."F".$labbotprogramjson['feedrate']);
   //echo "G1 Z".($coord['ztrav']-$labbotprogramjson['zheight'])." F".$labbotprogramjson['feedrate']."<br>";
-  array_push($cmdlist,"G1Z".($coord['ztrav']-$labbotprogramjson['zheight'])."F".$labbotprogramjson['feedrate']);
+  array_push($cmdlist,"G1Z".($coord['Z'] - $labbotprogramjson['zheight'])."F".$labbotprogramjson['feedrate']);
   return $cmdlist; 
  } ?>
 <? function valve($cmdlist,$labbotprogramjson){

@@ -56,24 +56,31 @@
  </div>
 
  <div class="col-sm-3">
- Row: <select name=row>
+ <b>Row: </b><select name=row>
   <? for($i=1;$i<13;$i++){ ?>
   <option value="<?=$i?>"><?=$i?></option>
   <? } ?>
 </select>
- <br>Above <br>Z: <input type=text name=zheight value="0" size=4>
- </div>
- <div class="col-sm-2">
- Feedrate<br>
+ <br><b>Above </b><br><b>Z: </b><input type=text name=zheight value="0" size=4><br><br>
+ <b>Feedrate</b><br>
  <? if(!(isset($_SESSION['labbotprogram']['feedrate']))){ $_SESSION['labbotprogram']['feedrate']  = 3000; }?>
  <input type=text name=feedrate value="<?=$_SESSION['labbotprogram']['feedrate']?>" size=4>
+ 
+
+</div>
+ <div class="col-sm-2">
+ 
+
  </div>
 
  <div class="col-sm-2"> 
  <button type="submit" name=motionsubmitstep class="btn-xs btn-success">Insert step</button>
  </div>
  <div class="col-sm-2">
- <button type="submit" name=ejectpipettes class="btn-xs btn-warning">Eject pipettes</button>
+ <b>Pipettes</b><br>
+ <button type="submit" name=loadpipettes class="btn-xs btn-primary">Load</button>
+ <br><br>
+ <button type="submit" name=ejectpipettes class="btn-xs btn-warning">Eject</button>
  </div>
 
 

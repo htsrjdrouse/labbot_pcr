@@ -26,7 +26,7 @@
       },
       //Gets Called if the connection could not be established
       onFailure: function (message) {
-         alert("Connection failed: " + message.errorMessage);
+         //alert("Connection failed: " + message.errorMessage);
       }
      };
      //Creates a new Messaging.Message Object and sends it to the HiveMQ MQTT Broker
