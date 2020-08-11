@@ -2,6 +2,44 @@
 <? include('functionslib.php'); ?>
 <? include('labbotfunctions.php'); ?>
 <?
+if (isset($_POST['custommacro'])){ 
+ unset($_SESSION['labbotprogramjson']);
+ $_SESSION['labbotprogramjson'] = json_decode(file_get_contents('labbot.programs.json'), true);
+ if(!isset($_SESSION['labbotprogramjson'])){
+  $_SESSION['labbotprogramjson'] = array();
+ }
+ $pprog = json_decode(file_get_contents('labbot.macros.json'), true);
+ //print_r($pprog['macros'][$_POST['macrolist']]['content']);
+
+ array_push($_SESSION['labbotprogramjson'], array(
+  "tasktype"=>"macro",
+  "macrocontents"=> $pprog['macros'][$_POST['macrolist']]['content'],
+  "mesg"=>$pprog['macros'][$_POST['macrolist']]['fname']
+ ));
+ closejson($_SESSION['labbotprogramjson'],'labbot.programs.json');
+ header("Location: index.php");
+}
+
+if (isset($_POST['storemacro'])){ 
+ $macros = json_decode(file_get_contents('labbot.macros.json'), true);
+ $newmacro = array();
+ if ((strlen($_POST['custommacroname'])) > 0){
+ foreach($macros['macros'] as $mm){
+  if ($mm['fname'] != $_POST['custommacroname']){
+   array_push($newmacro,array("fname"=>$mm['fname'], "content"=>$mm['content']));
+  }
+ }
+ $vvr = preg_split("/\n/", $_POST['macrofiledata']);
+ array_push($newmacro,array("fname"=>$_POST['custommacroname'], "content"=>$vvr));
+ $macros['macros'] = $newmacro;
+ file_put_contents('labbot.macros.json', json_encode($macros));
+ header("Location: index.php");
+ }  
+	
+}
+
+
+
 if (isset($_POST['pipettewashsubmitstep'])){ 
  unset($_SESSION['labbotprogramjson']);
  $_SESSION['labbotprogramjson'] = json_decode(file_get_contents('labbot.programs.json'), true);
@@ -250,6 +288,10 @@ if (isset($_POST['displaymacro'])){
     $cmdlist = motion($cmdlist, $labbotprogramjson[$mm]);
      displaymacro($cmdlist);
   }
+  if($labbotprogramjson[$mm]['tasktype'] == "macro"){
+    $cmdlist = macro($cmdlist, $labbotprogramjson[$mm]);
+    displaymacro($cmdlist);
+  }
   if($labbotprogramjson[$mm]['tasktype'] == "valve"){
     $cmdlist = valve($cmdlist, $labbotprogramjson[$mm]);
      displaymacro($cmdlist);
@@ -288,6 +330,9 @@ if (isset($_POST['editmacro'])){
   }
   if($labbotprogramjson[$mm]['tasktype'] == "pipettewash"){
     $cmdlist = pipettewash($cmdlist, $labbotprogramjson[$mm]);
+  }
+  if($labbotprogramjson[$mm]['tasktype'] == "macro"){
+    $cmdlist = macro($cmdlist, $labbotprogramjson[$mm]);
   }
   if($labbotprogramjson[$mm]['tasktype'] == "loadpipettes"){
     $cmdlist = loadpipettes($cmdlist, $labbotprogramjson[$mm]);

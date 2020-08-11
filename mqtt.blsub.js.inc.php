@@ -1,7 +1,7 @@
    <script type="text/javascript">
    var <?=$bmqttset['client']?> = new Messaging.Client("<?=$_SERVER['SERVER_ADDR']?>", 8080, "my<?=$bmqttset['client']?>id_" + parseInt(Math.random() * 100, 10));
     <?=$bmqttset['client']?>.onConnectionLost = function (responseObject) {
-     alert("connection lost: " + responseObject.errorMessage);
+     //alert("connection lost: " + responseObject.errorMessage);
    };
     //Gets called whenever you receive a message for your subscriptions
    <?=$bmqttset['client']?>.onMessageArrived = function (message) {

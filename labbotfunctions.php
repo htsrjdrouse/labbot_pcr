@@ -2,6 +2,13 @@
    $_SESSION['labbotprogramjson'] = json_decode(file_get_contents('labbot.programs.json'), true);
 } ?>
 
+<? function macro($cmdlist,$labbotprogramjson){ 
+ foreach($labbotprogramjson['macrocontents'] as $mm){
+   array_push($cmdlist,$mm);
+ }
+ return $cmdlist; 
+}?>
+
 <? function eject($cmdlist,$labbotprogramjson){ 
     foreach($_SESSION['labbotjson']['types'][0] as $tt){
      if($tt['name'] =="pipette removal"){

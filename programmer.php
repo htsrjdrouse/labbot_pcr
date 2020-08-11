@@ -1,7 +1,28 @@
-<div class="row">
 <h2> Build Macros</h2>
 <br>
 <form action=program.editor.php method=post>
+
+<div class="row">
+ <div class="col-sm-3"><b>Custom macro</div>
+ <div class="col-sm-5">
+  <?$pprog = json_decode(file_get_contents('labbot.macros.json'), true);?>
+<?
+ $size = count($pprog['macros']);
+ if ($size > 10){$size = 10;}
+ ?>
+ <select class="form-control form-control-sm" name="macrolist" size=<?=$size?>>
+<? foreach($pprog['macros'] as $akey => &$val){ ?>
+ <option value=<?=$akey?>><?=$val['fname']?></option>
+<? } ?>
+</select> 
+ </div>
+ <div class="col-sm-2"></div>
+ <div class="col-sm-2">
+ <button type="submit" name=custommacro class="btn-xs btn-success">Insert step</button>
+</div>
+
+ <div class="col-sm-12"><br><br></div>
+
  <div class="col-sm-2">
  <b>Wash pipettes</b><br>
  </div>

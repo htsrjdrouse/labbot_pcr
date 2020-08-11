@@ -1,7 +1,7 @@
    <script type="text/javascript">
    var client = new Messaging.Client("<?=$_SERVER['SERVER_ADDR']?>", 8080, "myclientid_" + parseInt(Math.random() * 100, 10));
     client.onConnectionLost = function (responseObject) {
-     alert("connection lost: " + responseObject.errorMessage);
+     //alert("connection lost: " + responseObject.errorMessage);
    };
     //Gets called whenever you receive a message for your subscriptions
    client.onMessageArrived = function (message) {

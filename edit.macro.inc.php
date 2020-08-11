@@ -22,6 +22,9 @@
 </td><td valign=top>
  &nbsp;&nbsp;<button type="submit" name=savemacro class="btn-xs btn-primary">Save Macro</button><br><br>
  &nbsp;&nbsp;<button type="submit" name=runmacro class="btn-xs btn-success">Run Macro</button><br><br>
+<br><br>
+&nbsp;&nbsp;<button type="submit" name=storemacro class="btn-xs btn-danger">Store Macro</button><br>
+<br> &nbsp;&nbsp;<input type=text name=custommacroname size=15>
 </td></tr></table>
 </form>
 

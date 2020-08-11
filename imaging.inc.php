@@ -46,7 +46,7 @@ if(!isset($_SESSION['cameraip'])){
 <div class="row">
 <form action=<?=$_SERVER['PHP_SELF']?> method=post>
 <div class="col-sm-12">
-<input type=text name=cameraip value=<?=$_SESSION['cameraip']?> size=10>
+<input type=text name=cameraip value="<?=$_SESSION['cameraip']?>" size=10>
 <button type="submit" name=cameraipsub value="cameraipsub"  class="btn btn-primary btn-sm">Set Camera IP</button><br> <br>
 </div>
 </form>

@@ -1,7 +1,7 @@
    <script type="text/javascript">
    var <?=$mqttset['client']?> = new Messaging.Client("<?=$_SERVER['SERVER_ADDR']?>", 8080, "my<?=$mqttset['client']?>id_" + parseInt(Math.random() * 100, 10));
     <?=$mqttset['client']?>.onConnectionLost = function (responseObject) {
-     alert("connection lost: " + responseObject.errorMessage);
+     //alert("connection lost: " + responseObject.errorMessage);
    };
     //Gets called whenever you receive a message for your subscriptions
    <?=$mqttset['client']?>.onMessageArrived = function (message) {
