@@ -150,12 +150,11 @@ void setup()
    fill(<?=$val['color']?>);
    text("<?=$val['name']?>",<?=($val['posx']+$shimx)?>,<?=($bedsizey+($shimy)-$val['Y']-$val['posy']+$margin['y'])?>);
    noStroke();
-   //rect(<?=($val['posx']+$shimx)?>,<?=(190-$val['posy']+$shimy+$val['marginy']-$val['Y'])?>,<?=$val['X']?>,<?=$val['Y']?>);
    rect(<?=($val['posx']+$shimx)?>,<?=($bedsizey+($shimy)-$val['Y']-$val['posy']+$margin['y'])?>,<?=$val['X']?>,<?=$val['Y']?>);
    stroke(0,0,0);
    <? for($x=0;$x<$val['wellcolumn'];$x++){ ?>
    <?for($y=0;$y<$val['wellrow'];$y++){ ?>
-   ellipse(<?=($val['posx']+$shimx+$val['marginx']+($x*$val['wellcolumnsp']+$val['shapex']/2))?>,<?=($bedsizey+($shimy)-$val['posy']-($val['marginy']*1)) - ($y*$val['wellrowsp'])?>,<?=$val['shapex']?>,<?=$val['shapey']?>);
+   ellipse(<?=($val['posx']+$shimx+$val['marginx']+($x*$val['wellcolumnsp']+(($val['shimx']/$val['wellrow'])*$y)+$val['shapex']/2))?>,<?=($bedsizey+($shimy)-$val['posy']-($val['marginy']*1)) - ($y*$val['wellrowsp']) - (($val['shimy']/$val['wellrow'])*$y)?>,<?=$val['shapex']?>,<?=$val['shapey']?>);
    <? } ?>
    <? }?>
   <? 

@@ -48,7 +48,7 @@
 &nbsp; &nbsp; &nbsp; <?=$indetype['posx']+$indetype['marginx']?>
 </div>
 <div class="col-sm-3"><b>Y</b> &nbsp; &nbsp; &nbsp;<br>&nbsp; &nbsp; &nbsp;
-<?=$indetype['posy']-$indetype['marginy']?>
+<?=$indetype['posy']+$indetype['marginy']?>
 </div>
 <div class="col-sm-3"><input type=text name=posy value="<?=$indetype['posy']?>" size=3></div>
 </td>
@@ -71,6 +71,18 @@
 </tr><tr>
 <td>
 <br>
+<div class="col-sm-3"><b>Shim X</b> &nbsp; &nbsp; &nbsp;</div>
+<div class="col-sm-3"><input type=text name=shimx value="<?=$indetype['shimx']?>" size=3></div>
+<div class="col-sm-3"><b>&nbsp;&nbsp;&nbsp;&nbsp;Y</b> &nbsp; &nbsp; &nbsp;</div>
+<div class="col-sm-3"><input type=text name=shimy value="<?=$indetype['shimy']?>" size=3></div>
+
+</td>
+</tr><tr>
+<td> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</td>
+</tr><tr>
+<td>
+
+
 <div class="col-sm-3"><b>Margin X</b> &nbsp; &nbsp; &nbsp;</div>
 <div class="col-sm-3"><input type=text name=marginx value=<?=$indetype['marginx']?> size=3></div>
 <div class="col-sm-3"><b>&nbsp;&nbsp;&nbsp;&nbsp;Y</b> &nbsp; &nbsp; &nbsp;</div>

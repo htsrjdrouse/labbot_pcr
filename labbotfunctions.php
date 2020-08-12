@@ -50,8 +50,11 @@
     $coord = $tt;
    }
   }
+ if(!isset($labbotprogramjson['column'])){$labbotprogramjson['column']=1;}
+ if(!isset($labbotprogramjson['row'])){$labbotprogramjson['row']=1;}
   array_push($cmdlist, "G1Z".($coord['ztrav']."F".$labbotprogramjson['feedrate']));
-  array_push($cmdlist, "G1X".($coord['posx']+$coord['marginx'])."Y".($coord['posy']+$coord['wellrowsp']*$labbotprogramjson['row']+$coord['marginy'])."F".$labbotprogramjson['feedrate']);
+  //array_push($cmdlist, "G1X".($coord['posx']+$coord['marginx'])."Y".($coord['posy']+$coord['wellrowsp']*($labbotprogramjson['row']-1)+$coord['marginy'])."F".$labbotprogramjson['feedrate']);
+  array_push($cmdlist, "G1X".($coord['posx']+$coord['marginx']+(($coord['shimx']/$coord['wellrow'])*($labbotprogramjson['row']-1)))."Y".($coord['posy']+($coord['wellrowsp']*($labbotprogramjson['row']-1))+$coord['marginy'] + ($coord['shimy']/$labbotprogramjson['row'])*($labbotprogramjson['row']-1))."F".$labbotprogramjson['feedrate']);
   array_push($cmdlist, "G1Z".($coord['Z']-$labbotprogramjson['zheight'])."F".$labbotprogramjson['feedrate']);
  }
   return $cmdlist; 
@@ -71,10 +74,12 @@
    $coord = $tt;
   }
   } ?>
- <? 
+<? 
+ if(!isset($labbotprogramjson['column'])){$labbotprogramjson['column']=1;}
+ if(!isset($labbotprogramjson['row'])){$labbotprogramjson['row']=1;}
   //echo "G1 X".$coord['posx']." Y".($coord['posy']+$coord['wellrowsp']*$labbotprogramjson['row'])." F".$labbotprogramjson['feedrate']."<br>"; 
   array_push($cmdlist, "G1Z".($coord['ztrav']."F".$labbotprogramjson['feedrate']));
-  array_push($cmdlist, "G1X".($coord['posx']+$coord['marginx'])."Y".($coord['posy']+$coord['wellrowsp']*$labbotprogramjson['row']+$coord['marginy'])."F".$labbotprogramjson['feedrate']);
+  array_push($cmdlist, "G1X".($coord['posx']+$coord['marginx']+(($coord['shimx']/$coord['wellrow'])*($labbotprogramjson['row']-1)))."Y".($coord['posy']+($coord['wellrowsp']*($labbotprogramjson['row']-1))+$coord['marginy'] + ($coord['shimy']/$labbotprogramjson['row'])*($labbotprogramjson['row']-1))."F".$labbotprogramjson['feedrate']);
   //echo "G1 Z".($coord['ztrav']-$labbotprogramjson['zheight'])." F".$labbotprogramjson['feedrate']."<br>";
   array_push($cmdlist,"G1Z".($coord['Z'] - $labbotprogramjson['zheight'])."F".$labbotprogramjson['feedrate']);
   return $cmdlist; 
