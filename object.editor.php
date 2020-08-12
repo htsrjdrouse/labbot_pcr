@@ -93,7 +93,7 @@ if (isset($_POST['savetarget'])){
  //$_SESSION['labbotjson']['targettrack'] = $_POST['targetlist'];
  //$_SESSION['labbotjson']['targetactive'] = $_SESSION['labbotjson']['types'][0][$_POST['targetlist']]['name'];
   if ($_POST['active'] == "Active"){echo "its on<br>";$on = 'on';} else {$on = 'off';}
-  echo 'on '.$on.'<br>';
+  //echo 'on '.$on.'<br>';
   $newd = array(
    'name' => $_POST['tarname'],
    'catalog' => $_POST['tarcatalog'],
@@ -117,6 +117,26 @@ if (isset($_POST['savetarget'])){
    'color' => $_POST['color'],
    'ztrav' => $_POST['ztrav']
   );
+  if (preg_match("/^drypad.*$/", $_POST['tarname'])){
+	  $_SESSION['dryrefnum'] = $_POST['dryrefnum'];
+	  $fxpos = $_POST['posx'] + $_POST['marginx'];
+	  $fypos = $_POST['posy'] + $_POST['marginy'];
+	  $drypositions = array();
+
+	  for($x=0; $x<($_POST['wellcolumnsp'] / $_POST['dryspacing']); $x++){
+	  for($y=0; $y<($_POST['shapey'] / $_POST['dryspacing']); $y++){
+		  array_push($drypositions, array(
+			   'x' => $x+$fxpos,
+			   'y' => $y+$fypos));
+	  }
+	  }
+	  array_push($newd, array(
+		  'recorddrypositions'=>$_POST['recorddrypositions'],
+		  'dryspacing'=>$_POST['dryspacing'],
+		  'dryrefnum'=>$_POST['dryrefnum'],
+		  'drypositions'=>$drypositions
+	  ));
+  }
  $nomnom = array();
  foreach($_SESSION['labbotjson']['types'][0] as $key => &$val){ 
   if ($key == $_POST['targetlist']){
@@ -128,6 +148,7 @@ if (isset($_POST['savetarget'])){
  }
 
  //var_dump($_SESSION['labbotjson']['types'][0]);
+ //echo $_POST['tarname'];
  //echo "<br>-------------<br>";
  $_SESSION['labbotjson']['types'][0] = $nomnom;
  //var_dump($_SESSION['labbotjson']['types'][0]);

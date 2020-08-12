@@ -69,9 +69,10 @@
    }
   }
 } ?>
+
 <? foreach($_SESSION['labbotjson']['types'][0] as $tt) { 
   if ($tt['name'] == $obj){
-   $coord = $tt;
+     $coord = $tt;
   }
   } ?>
 <? 
@@ -79,11 +80,19 @@
  if(!isset($labbotprogramjson['row'])){$labbotprogramjson['row']=1;}
   //echo "G1 X".$coord['posx']." Y".($coord['posy']+$coord['wellrowsp']*$labbotprogramjson['row'])." F".$labbotprogramjson['feedrate']."<br>"; 
   array_push($cmdlist, "G1Z".($coord['ztrav']."F".$labbotprogramjson['feedrate']));
-  array_push($cmdlist, "G1X".($coord['posx']+$coord['marginx']+(($coord['shimx']/$coord['wellrow'])*($labbotprogramjson['row']-1)))."Y".($coord['posy']+($coord['wellrowsp']*($labbotprogramjson['row']-1))+$coord['marginy'] + ($coord['shimy']/$labbotprogramjson['row'])*($labbotprogramjson['row']-1))."F".$labbotprogramjson['feedrate']);
+  if (preg_match("/^drypad.*$/", $labbotprogramjson['object'])){ 
+   array_push($cmdlist, "G1X".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['x'])."Y".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['y'])."F".$labbotprogramjson['feedrate']);
+   $_SESSION['dryrefnum'] = $_SESSION['dryrefnum'] + 1;
+   if($_SESSION['dryrefnum'] == count($coord[0]['drypositions'])-1){$_SESSION['dryrefnum'] = 0;}
+  } else {
+   array_push($cmdlist, "G1X".($coord['posx']+$coord['marginx']+(($coord['shimx']/$coord['wellrow'])*($labbotprogramjson['row']-1)))."Y".($coord['posy']+($coord['wellrowsp']*($labbotprogramjson['row']-1))+$coord['marginy'] + ($coord['shimy']/$labbotprogramjson['row'])*($labbotprogramjson['row']-1))."F".$labbotprogramjson['feedrate']);
+  }
   //echo "G1 Z".($coord['ztrav']-$labbotprogramjson['zheight'])." F".$labbotprogramjson['feedrate']."<br>";
   array_push($cmdlist,"G1Z".($coord['Z'] - $labbotprogramjson['zheight'])."F".$labbotprogramjson['feedrate']);
   return $cmdlist; 
  } ?>
+
+
 <? function valve($cmdlist,$labbotprogramjson){
   //valve-1.1.1.1.1.1.1.1-input
   //$line = 'valve'-<?=preg_replace("/valve/", "", $labbotprogramjson['valvepos']); 
@@ -130,8 +139,11 @@
       }
      }  
      array_push($cmdlist,"G1Z".$coord['ztrav']);
-     $cmdlist = motion($cmdlist,$labbotprogramjson);
-     array_push($cmdlist,"G1Z".$coord['Z'].'_'.$labbotprogramjson['drypadtime']);
+     //$cmdlist = motion($cmdlist,$labbotprogramjson);
+     array_push($cmdlist, "G1X".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['x'])."Y".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['y'])."F".$labbotprogramjson['feedrate']);
+     $_SESSION['dryrefnum'] = $_SESSION['dryrefnum'] + 1;
+     if($_SESSION['dryrefnum'] == count($coord[0]['drypositions'])-1){$_SESSION['dryrefnum'] = 0;}
+     array_push($cmdlist,"G1Z".($coord['Z'] - $labbotprogramjson['zheight'])."F".$labbotprogramjson['feedrate']."_".$labbotprogramjson['drypadtime']);
      array_push($cmdlist,"G1Z".$coord['ztrav']);
     }
    }

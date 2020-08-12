@@ -40,18 +40,22 @@
  <?if(!isset($_SESSION['drypadbool'])){ $_SESSION['drypadbool'] = "checked";}?>
  <?if(!isset($_SESSION['drypadtime'])){ $_SESSION['drypadtime'] = 1;}?>
  <?if(!isset($_SESSION['pipettewashcycles'])){ $_SESSION['pipettewashcycles'] = 4;}?>
+ <?if(!isset($_SESSION['recorddrypositions'])){ $_SESSION['recorddrypositions'] = "checked";}?>
+ <?if(!isset($_SESSION['dryspacing'])){ $_SESSION['dryspacing'] = 1;}?>
  <input type=text name=pipettewashvol size=3 value=<?=$_SESSION['pipettewashvol']?>>
  <br>
  <b>Time</b><br>
  <input type=text name=pipettewashtime size=2 value=<?=$_SESSION['pipettewashtime']?>>
- </div>
- <div class="col-sm-3">
+ <br>
  <b>Cycles</b><br>
  <input type=text name=pipettewashcycles size=2 value=<?=$_SESSION['pipettewashcycles']?>>
  <br>
+ </div>
+ <div class="col-sm-3">
  <b>Dry after wash</b> <input type=checkbox name=dryafterwash <?=$_SESSION['drypadbool']?>>
  <br>
  <b>Dry time</b> <input type=text name=drypadtime value=<?=$_SESSION['drypadtime']?> size=1>
+ <br>
  </div>
  <div class="col-sm-2"> 
  <button type="submit" name=pipettewashsubmitstep class="btn-xs btn-success">Insert step</button>

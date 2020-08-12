@@ -103,11 +103,31 @@
 </div>
 <div class="col-sm-3"><b>X diam </b><br><input type=text name=shapex value=<?=$indetype['shapex']?> size=3></div>
 <div class="col-sm-3"><b>Y diam </b><bR><input type=text name=shapey value=<?=$indetype['shapey']?> size=3></div>
+
+</tD>
+<? if(preg_match("/^drypad.*$/",$indetype['name'])){?>
+</tr><tr>
+<td> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</td>
+</tr><tr>
+<td>
+<br>
+
+
+<div class="col-sm-6"><b>Record drypad positions</b> &nbsp; &nbsp;
+<? if ($indetype[0]['recorddrypositions'] == "on"){$check = "checked"; } else { $check = ""; } ?>
+ <input type=checkbox name=recorddrypositions <?=$check?>>
+</div>
+<div class="col-sm-6"><b>Spacing</b> &nbsp;&nbsp;<input type=text name=dryspacing value="<?=$indetype[0]['dryspacing']?>" size=1><br>
+<? if(!isset($_SESSION['dryrefnum'])){$indetype[0]['dryrefnum'] = 0; $_SESSION['dryrefnum'] = 0; } ?>
+<b>Ref number</b> &nbsp;&nbsp;<input type=text name=dryrefnum value="<?=$indetype[0]['dryrefnum']?>" size=1></div>
+<? } ?>
+
 </tD>
 </tr><tr>
 <td> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</td>
 </tr><tr>
 <td>
+
 <div class="col-sm-6"><b>Z travel height to surface</b> &nbsp; &nbsp; &nbsp;</div>
 <div class="col-sm-3"><input type=text name=ztrav value=<?=$indetype['ztrav']?> size=4></div>
 </tD>
