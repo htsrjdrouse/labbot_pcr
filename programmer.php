@@ -16,7 +16,11 @@
 <? } ?>
 </select> 
  </div>
- <div class="col-sm-2"></div>
+ <div class="col-sm-2">
+<? if (count($pprog['macros']) > 0){ ?>
+ <button type="submit" name=deletecustommacro class="btn-xs btn-danger">Delete macro</button>
+ <? } ?>
+</div>
  <div class="col-sm-2">
  <button type="submit" name=custommacro class="btn-xs btn-success">Insert step</button>
 </div>

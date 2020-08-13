@@ -20,7 +20,28 @@ if (isset($_POST['custommacro'])){
  header("Location: index.php");
 }
 
+if (isset($_POST['deletecustommacro'])){ 
+ $macros = json_decode(file_get_contents('labbot.macros.json'), true);
+ echo $_POST['macrolist'].'<br>';
+ $newmacro = array();
+ foreach($macros['macros'] as $akey => &$val){ 
+  if($akey != $_POST['macrolist']){
+  echo $akey.'<br>';
+  array_push($newmacro,array("fname"=>$val['fname'], "content"=>$val['content']));
+  }
+ }
+ $macros['macros'] = $newmacro;
+ var_dump($newmacro);
+ file_put_contents('labbot.macros.json', json_encode($macros));
+ header("Location: index.php");
+ }
+
 if (isset($_POST['storemacro'])){ 
+ $vvr = preg_split("/\n/", $_POST['macrofiledata']);
+ $_SESSION['cmdlist'] = $vvr;
+ $prog = array("program"=>$vvr);
+ file_put_contents('labbot.programtorun.json', json_encode($prog));
+ sleep(1);
  $macros = json_decode(file_get_contents('labbot.macros.json'), true);
  $newmacro = array();
  if ((strlen($_POST['custommacroname'])) > 0){
@@ -377,6 +398,11 @@ if (isset($_POST['savemacro'])){
 }
 
 if (isset($_POST['runmacro'])){ 
+ $vvr = preg_split("/\n/", $_POST['macrofiledata']);
+ $_SESSION['cmdlist'] = $vvr;
+ $prog = array("program"=>$vvr);
+ file_put_contents('labbot.programtorun.json', json_encode($prog));
+ sleep(1);
  exec('mosquitto_pub -t "labbot" -m "runmacro"');
  //$_SESSION['labbot']['view'] = 'logger';
  header("Location: index.php");
