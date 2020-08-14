@@ -25,14 +25,43 @@
 <? } ?>
 </div>
 </td>
-</tr><tr>
+</tr>
+
+
+<? if($indetype['name'] == "pipette removal"){ ?>
+<tr>
+<td>
+<div class="col-sm-3"><b>Pipette tip</b> &nbsp; &nbsp; &nbsp;</div>
+<div class="col-sm-9">
+<? if(!isset($_SESSION['pipettetype'])) {  $_SESSION['pipettetype'] = "P20"; } ?>
+<? $pipettetype = array("P20", "P200"); ?>
+<? foreach($pipettetype as $ppp){ ?>
+	<b><?=$ppp?></b> <input type=radio name=pipettetype value="<?=$ppp?>" <? if($ppp == $_SESSION['pipettetype']){ echo "checked"; } ?>> &nbsp;&nbsp;
+<? } ?>
+
+</div>
+</td>
+</tr>
+<tr>
+<td> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</td>
+</tr>
+<? } ?>
+
+<tr>
 <td>
 <div class="col-sm-3"><b>Catalog</b> &nbsp; &nbsp; &nbsp;</div>
 <div class="col-sm-9"><input type=text name=tarcatalog value="<?=$indetype['catalog']?>" size=20></div>
 </td>
-</tr><tr>
+</tr>
+<tr>
 <td> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</td>
-</tr><tr>
+</tr>
+
+
+
+
+
+<tr>
 <td>
 <table cellpadding=10><tr>
 <td><b>&nbsp;&nbsp;Size X</b> &nbsp; &nbsp;<input type=text name=X value="<?=$indetype['X']?>" size=7>&nbsp; &nbsp; &nbsp;</td>

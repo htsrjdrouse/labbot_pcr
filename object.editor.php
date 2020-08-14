@@ -137,6 +137,11 @@ if (isset($_POST['savetarget'])){
 		  'drypositions'=>$drypositions
 	  ));
   }
+  if ($_POST['tarname'] == "pipette removal"){ 
+	  $_SESSION['pipettetype'] = $_POST['pipettetype'];
+	  array_push($newd, array('pipettetype'=>$_POST['pipettetype'])); 
+ } 
+
  $nomnom = array();
  foreach($_SESSION['labbotjson']['types'][0] as $key => &$val){ 
   if ($key == $_POST['targetlist']){

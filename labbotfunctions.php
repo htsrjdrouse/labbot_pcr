@@ -16,17 +16,29 @@
       }
  }
     //echo "G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy']+5)."Z0F5000<br>";
- array_push($cmdlist,"G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy']+5)."Z0F5000");
- //echo "G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy']+5)."Z".$ejector['ztrav']."F3000<br>";
- array_push($cmdlist,"G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy']+5)."Z".$ejector['ztrav']."F3000");
- //echo "G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy']+2)."Z".$ejector['ztrav']."F3000<br>";
- array_push($cmdlist,"G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy']+2)."Z".$ejector['ztrav']."F3000");
- //echo "G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy']+2)."Z".($ejector['ztrav']-1)."F500<br>";
- array_push($cmdlist,"G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy']+2)."Z".($ejector['ztrav']-1)."F500");
- //echo "G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy'])."Z".($ejector['ztrav']-3)."F500<br>";  
- array_push($cmdlist,"G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy'])."Z".($ejector['ztrav']-3)."F500");
- //echo "G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy'])."Z0F5000<br>";
- array_push($cmdlist,"G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy'])."Z0F5000");
+  if ($ejector['pipettetype'] == "P20") { 
+ array_push($cmdlist,"G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy']+12.5)."Z0F5000");
+ array_push($cmdlist,"G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy']+12.5)."Z".$ejector['posz']."F5000");
+ array_push($cmdlist,"G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy'])."Z".$ejector['posz']."F1000");
+ array_push($cmdlist,"G1X".$ejector['posx']-1.75."Y".($ejector['posy']+$ejector['marginy'])."Z".($ejector['posz']-11)."F100");
+ array_push($cmdlist,"G1X".$ejector['posx']-1.75."Y".($ejector['posy']+$ejector['marginy']+11)."Z".($ejector['posz']-11)."F1000");
+ array_push($cmdlist,"G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy']+11)."Z".($ejector['posz']-11)."F1000");
+ array_push($cmdlist,"G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy'])."Z".($ejector['posz']."F1000");
+ array_push($cmdlist,"G1X".$ejector['posx']+1.75."Y".($ejector['posy']+$ejector['marginy'])."Z".($ejector['posz']."F1000");
+ array_push($cmdlist,"G1X".$ejector['posx']+1.75."Y".($ejector['posy']+$ejector['marginy'])."Z".($ejector['posz']-11."F100");
+ array_push($cmdlist,"G1X".$ejector['posx']+1.75."Y".($ejector['posy']+$ejector['marginy']+12.5)."Z".($ejector['posz']-11."F100");
+ array_push($cmdlist,"G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy']+12.5)."Z0F5000");
+ array_push($cmdlist,"G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy']+12.5)."Z".$ejector['posz']."F5000");
+ array_push($cmdlist,"G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy'])."Z".$ejector['posz']."F1000");
+ array_push($cmdlist,"G1X".$ejector['posx']-1.75."Y".($ejector['posy']+$ejector['marginy'])."Z".($ejector['posz']-11)."F100");
+ array_push($cmdlist,"G1X".$ejector['posx']-1.75."Y".($ejector['posy']+$ejector['marginy']+11)."Z".($ejector['posz']-11)."F1000");
+ array_push($cmdlist,"G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy']+11)."Z".($ejector['posz']-11)."F1000");
+ array_push($cmdlist,"G1X".$ejector['posx']."Y".($ejector['posy']+$ejector['marginy'])."Z".($ejector['posz']."F1000");
+ array_push($cmdlist,"G1X".$ejector['posx']+1.75."Y".($ejector['posy']+$ejector['marginy'])."Z".($ejector['posz']."F1000");
+ array_push($cmdlist,"G1X".$ejector['posx']+1.75."Y".($ejector['posy']+$ejector['marginy'])."Z".($ejector['posz']-11."F100");
+ array_push($cmdlist,"G1X".$ejector['posx']+1.75."Y".($ejector['posy']+$ejector['marginy']+12.5)."Z".($ejector['posz']-11."F100");
+ array_push($cmdlist,"G28Z0");
+  }
  return $cmdlist; 
 } ?>
 
@@ -56,6 +68,8 @@
   //array_push($cmdlist, "G1X".($coord['posx']+$coord['marginx'])."Y".($coord['posy']+$coord['wellrowsp']*($labbotprogramjson['row']-1)+$coord['marginy'])."F".$labbotprogramjson['feedrate']);
   array_push($cmdlist, "G1X".($coord['posx']+$coord['marginx']+(($coord['shimx']/$coord['wellrow'])*($labbotprogramjson['row']-1)))."Y".($coord['posy']+($coord['wellrowsp']*($labbotprogramjson['row']-1))+$coord['marginy'] + ($coord['shimy']/$labbotprogramjson['row'])*($labbotprogramjson['row']-1))."F".$labbotprogramjson['feedrate']);
   array_push($cmdlist, "G1Z".($coord['Z']-$labbotprogramjson['zheight'])."F".$labbotprogramjson['feedrate']);
+  array_push($cmdlist, "G1Z".($coord['Z']-$labbotprogramjson['zheight']-10)."F500");
+  array_push($cmdlist, "G28Z0");
  }
   return $cmdlist; 
 }
