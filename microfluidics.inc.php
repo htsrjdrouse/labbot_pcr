@@ -1,4 +1,102 @@
 <? $jsonmicrofl = json_decode(file_get_contents('microfluidics.json'), true);?>
+<? if(isset($_POST['syringesubmitstep'])){
+ $_SESSION["microliter"]= $_POST['microliter'];
+ $_SESSION["syringespeed"]= $_POST['syringespeed'];
+ $_SESSION["syringeacceleration"]= $_POST['syringeacceleration'];
+ if (isset($_POST['homesyringe'])){
+  $msg =  "homing syringe";
+  $_SESSION['microliter'] = 0;
+  $pcmd = "sg28e0";
+  $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
+  system($cmd);
+ } else {
+  $pcmd = "sg1e".$_POST['microliter']."s".$_POST['syringespeed']."a".$_POST['syringeacceleration'];
+  $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
+  system($cmd);
+ }
+}
+?> 
+
+<? if(isset($_POST['gotowash'])){
+ foreach($_SESSION['labbotjson']['types'][0] as $tt) { 
+  if ($tt['name'] == 'wash station'){
+   $coord = $tt;
+  }
+ } 
+  $pcmd = "G1Z".($coord['ztrav']."F".$_SESSION['labbotprogram']['feedrate']);
+  $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
+  system($cmd);
+  $row = 1;
+  if(!(isset($_SESSION['labbotprogram']['feedrate']))){ $_SESSION['labbotprogram']['feedrate']  = 3000; }
+   $pcmd = "G1X".($coord['posx']+$coord['marginx']+(($coord['shimx']/$coord['wellrow'])*($row-1)))."Y".($coord['posy']+($coord['wellrowsp']*($row-1))+$coord['marginy'] + ($coord['shimy']/$row)*($row-1))."F".$_SESSION['labbotprogram']['feedrate'];
+  $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
+  system($cmd);
+  sleep(2);
+  $pcmd ="G1Z".($coord['Z'])."F".$_SESSION['labbotprogram']['feedrate'];
+  $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
+  system($cmd);
+}?>
+
+<? if(isset($_POST['gotowaste'])){
+ foreach($_SESSION['labbotjson']['types'][0] as $tt) { 
+  if ($tt['name'] == 'waste station'){
+   $coord = $tt;
+  }
+ } 
+  $pcmd = "G1Z".($coord['ztrav']."F".$_SESSION['labbotprogram']['feedrate']);
+  $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
+  system($cmd);
+  $row = 1;
+  if(!(isset($_SESSION['labbotprogram']['feedrate']))){ $_SESSION['labbotprogram']['feedrate']  = 3000; }
+   $pcmd = "G1X".($coord['posx']+$coord['marginx']+(($coord['shimx']/$coord['wellrow'])*($row-1)))."Y".($coord['posy']+($coord['wellrowsp']*($row-1))+$coord['marginy'] + ($coord['shimy']/$row)*($row-1))."F".$_SESSION['labbotprogram']['feedrate'];
+  $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
+  system($cmd);
+  sleep(2);
+  $pcmd ="G1Z".($coord['Z'])."F".$_SESSION['labbotprogram']['feedrate'];
+  $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
+  system($cmd);
+}?>
+
+
+<? if(isset($_POST['gotodry'])){
+ foreach($_SESSION['labbotjson']['types'][0] as $tt) { 
+  if ($tt['name'] == 'drypad'){
+   $coord = $tt;
+  }
+ } 
+  $pcmd = "G1Z".($coord['ztrav']."F".$_SESSION['labbotprogram']['feedrate']);
+  $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
+  $row = 1;
+  if(!(isset($_SESSION['labbotprogram']['feedrate']))){ $_SESSION['labbotprogram']['feedrate']  = 3000; }
+   $pcmd = "G1X".($coord['posx']+$coord['marginx']+(($coord['shimx']/$coord['wellrow'])*($row-1)))."Y".($coord['posy']+($coord['wellrowsp']*($row-1))+$coord['marginy'] + ($coord['shimy']/$row)*($row-1))."F".$_SESSION['labbotprogram']['feedrate'];
+  $cmd = 'mosquitto_pub -t "labbot" -m "'.$cmd.'"';
+  system($cmd);
+  sleep(2);
+  $pcmd ="G1Z".($coord['Z'])."F".$_SESSION['labbotprogram']['feedrate'];
+  $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
+  system($cmd);
+  if($_POST['drypadtime'] > 0){
+   $_SESSION['drypadtime'] = $_POST['drypadtime'];
+   sleep($_SESSION['drypadtime']);
+   $pcmd ="G1Z".($coord['Z'])."F".$_SESSION['labbotprogram']['feedrate'];
+   $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
+   system($cmd);
+  }
+}?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <? if(isset($_POST['pcvon'])){
  $_SESSION['labbot3d']['pcvon'] = 1;
  $cmd = 'mosquitto_pub -t "labbot" -m "pcvon"';
@@ -119,6 +217,7 @@
 </div>
 </div>
 <div class="row">&nbsp;</div>
+
 <div class="row">
 <div class="col-sm-3">
 <b>Valve position</b>
@@ -138,61 +237,84 @@
 </td><td>&nbsp;&nbsp;</td><td align=center>
 <b><font size=1>Close</font></b><br>
 <input type=radio name=valvepos value=close id=close <? if($_SESSION['labbot3d']['valvepos'] == "close"){?> checked <? } ?>>
-
 </td></tr></table>
+<br>
+<button type="submit" name=govalvepos value="govalvepos"  class="btn btn-primary btn-xs">Go to position</button>
+</form>
 </div>
-<div class="row">&nbsp;<br>&nbsp;<br>&nbsp;</div>
+</div>
+
 <div class="row">
 <div class="col-sm-2"></div>
 <div class="col-sm-4">
-<button type="submit" name=govalvepos value="govalvepos"  class="btn btn-primary btn-sm">Go to position</button><br>
 </div>
 <div class="col-sm-4">
-<!--<button type="submit" name=savevalvepos value="savevalvepos"  class="btn btn-danger btn-sm">Save position</button><br>-->
+<!--<button type="submit" name=savevalvepos value="savevalvepos"  class="btn btn-danger btn-xs">Save position</button><br>-->
 </div>
-</form>
 </div>
 
+
 <form action=<?=$_SERVER['PHP_SELF']?> method=post>
-<div class="row"><div class="col-sm-1"></div><div class="col-sm-10"><hr></div>
+<div class="row"><div class="col-sm-1"></div><div class="col-sm-10"><hr></div></div>
 <div class="row">
-<div class="col-sm-1">&nbsp;&nbsp;&nbsp;</div>
-<div class="col-sm-3">&nbsp;&nbsp;<b>Wash/Waste</b></div>
-<div class="col-sm-5">
+<!--<div class="col-sm-1">&nbsp;&nbsp;&nbsp;</div>
+<div class="col-sm-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Wash<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Waste</b></div>
+<div class="col-sm-3">&nbsp;&nbsp;<b>Wash<br>&nbsp;&nbsp;Waste</b></div>
+-->
+
+<div class="col-sm-2"><b>Wash<br>Waste</b></div>
+<div class="col-sm-6">
 <? if(!isset($_SESSION['labbot3d']['washon'])){ $_SESSION['labbot3d']['washon'] = 0; } ?>
 <? if(!isset($_SESSION['labbot3d']['wasteon'])){ $_SESSION['labbot3d']['dryon'] = 0; } ?>
 <? if(!isset($_SESSION['labbot3d']['editwashdry'])){ $_SESSION['labbot3d']['editwashdry'] = 0; } ?>
 <table><tr><td align=center>
 <? if($_SESSION['labbot3d']['washon'] == 0) { ?>
-<button type="submit" name=washon value="washon"  class="btn btn-warning btn-sm">Wash on</button>
+<button type="submit" name=washon value="washon"  class="btn btn-warning btn-xs">Wash on</button>
 <? } else { ?>
-<button type="submit" name=washoff value="washoff"  class="btn btn-danger btn-sm">Wash off</button>
+<button type="submit" name=washoff value="washoff"  class="btn btn-danger btn-xs">Wash off</button>
 <? } ?>
-</td><td align=center>&nbsp;&nbsp;&nbsp;</td>
 </td><td align=center>
 <? if($_SESSION['labbot3d']['wasteon'] == 0) { ?>
-<button type="submit" name=wasteon value="wasteon"  class="btn btn-success btn-sm">Waste on</button>
+<button type="submit" name=wasteon value="wasteon"  class="btn btn-success btn-xs">Waste on</button>
 <? } else { ?>
-<button type="submit" name=wasteoff value="wasteoff"  class="btn btn-danger btn-sm">Waste off</button>
+<button type="submit" name=wasteoff value="wasteoff"  class="btn btn-danger btn-xs">Waste off</button>
 <? } ?>
-</td></tr></table>
+</td>
+</td><td align=center>
+ <?if(!isset($_SESSION['drypadtime'])){ $_SESSION['drypadtime'] = 1;}?>
+ <font size=1><b>Dry time</b><br><input type=text name=drypadtime value="<?=$_SESSION['drypadtime']?>" size=1>
+</td>
+</tr>
+<tr>
+<td>
+<br><button type="submit" name=gotowast value="gotowash"  class="btn btn-primary btn-xs">Go to wash</button><br>
+</td>
+<!--<td align=center>&nbsp;&nbsp;&nbsp;</td>-->
+<td align=center>
+<br><button type="submit" name=gotowast value="gotowaste"  class="btn btn-primary btn-xs">Go to waste</button><br>
+</td>
+<td><br><button type="submit" name=gotowast value="gotodry"  class="btn btn-primary btn-xs">Go to dry</button>
+</td></tr>
+</table>
 </form>
 </div>
 </div>
 <div class="row"><div class="col-sm-1"></div><div class="col-sm-10"><hr></div></div>
 
 <div class="row">
-<div class="col-sm-1"></div>
+<? include('syringe.inc.php'); ?>
+</div>
+
+<div class="row">
+<!--<div class="col-sm-1"></div> -->
 <div class="col-sm-3">
-&nbsp;&nbsp;<b>Pressure</b><br><br>
+<b>Pressure</b><br><br>
 <? if(!isset($_SESSION['labbot3d']['pcvon'])){ $_SESSION['pcvon'] = 0;} ?>
 <? if($_SESSION['labbot3d']['pcvon'] == 0) { ?>
-<button type="submit" name=pcvon value="pcvon"  class="btn btn-success btn-sm">PCV on</button>
+<button type="submit" name=pcvon value="pcvon"  class="btn btn-success btn-xs">PCV on</button>
 <? } else { ?>
-<button type="submit" name=pcvoff value="pcvoff"  class="btn btn-danger btn-sm">PCV off</button>
+<button type="submit" name=pcvoff value="pcvoff"  class="btn btn-danger btn-xs">PCV off</button>
 <? } ?>
-
-
 </div>
 <div class="col-sm-4">
 <form action=<?=$_SERVER['PHP_SELF']?> method=post><font size=2>
@@ -212,13 +334,11 @@
 <tr>
 <td><input type=text name=heatval value="<?=$_SESSION['heatval']?>" size=3  style="text-align:right;font-size:10px;"> &nbsp;&nbsp;</td>
 </tr>
-
-
-
 </table>
-<button type="submit" name=feedbackpcv value="feedbackpcv"  class="btn btn-warning btn-sm">Feedback on</button><br>
+
+<button type="submit" name=feedbackpcv value="feedbackpcv"  class="btn btn-warning btn-xs">Feedback on</button><br>
 <? } else { ?>
-<button type="submit" name=manpcv value="manpcv"  class="btn btn-danger btn-sm">Feedback off</button>
+<button type="submit" name=manpcv value="manpcv"  class="btn btn-danger btn-xs">Feedback off</button>
 <? } ?>
   <? $mqttset = array("divmsg"=>"tempmessages","topic"=>"temp","client"=>"client3")?>
   <? include('mqtt.sub.js.inc.php'); ?> 
@@ -229,7 +349,6 @@
 <tr><td><b><font size=1><div style="font-weight:bold" id="<?=$mqttset['divmsg']?>"> C </b></div></font></td></tr>
 <tr><td><font size=1><b>Feedback<br><?=$jsonmicrofl['sensorvalue']?></b></font></td></tr>
 </table>
-
 </form>
 </div>
 <? include('heatblock.inc.php');?>

@@ -141,8 +141,8 @@
  <div class="col-sm-12"><br> </div>
 </div>
 <div class="row">
- <div class="col-sm-2"><b>Syringe pump</b> <br><a href=backlashrating.php target=new>backlash</a>
- </div> 
+
+ <div class="col-sm-2"><b>Syringe pump</b> <br><a href=backlashrating.php target=new>backlash</a> </div> 
  <div class="col-sm-3"> 
  <?if(!isset($_SESSION['syringespeed'])){ $_SESSION['syringespeed'] = 1000;}?>
  <?if(!isset($_SESSION['syringeacceleration'])){ $_SESSION['syringeacceleration'] = 500;}?>
@@ -153,7 +153,6 @@
   <input type=checkbox name=homesyringe><b>&nbsp;Home</b>
   <br>
 
-</td>
  </div>
  <div class="col-sm-3"> 
  <b>Speed</b> <input type=text name=syringespeed value="<?=$_SESSION['syringespeed']?>" size=5><br>
@@ -165,6 +164,8 @@
  <div class="col-sm-2"> 
  <button type="submit" name=syringesubmitstep class="btn-xs btn-success">Insert step</button>
  </div>
+
+
 </div>
 <div class="row">
  <div class="col-sm-12"><br> </div>
