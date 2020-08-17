@@ -8,11 +8,11 @@
   $_SESSION['microliter'] = 0;
   $pcmd = "sg28e0";
   $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
-  system($cmd);
+  exec($cmd);
  } else {
   $pcmd = "sg1e".$_POST['microliter']."s".$_POST['syringespeed']."a".$_POST['syringeacceleration'];
   $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
-  system($cmd);
+  exec($cmd);
  }
 }
 ?> 
@@ -25,16 +25,18 @@
  } 
   $pcmd = "G1Z".($coord['ztrav']."F".$_SESSION['labbotprogram']['feedrate']);
   $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
-  system($cmd);
+  echo $cmd.'<br>';
+  exec($cmd);
   $row = 1;
   if(!(isset($_SESSION['labbotprogram']['feedrate']))){ $_SESSION['labbotprogram']['feedrate']  = 3000; }
    $pcmd = "G1X".($coord['posx']+$coord['marginx']+(($coord['shimx']/$coord['wellrow'])*($row-1)))."Y".($coord['posy']+($coord['wellrowsp']*($row-1))+$coord['marginy'] + ($coord['shimy']/$row)*($row-1))."F".$_SESSION['labbotprogram']['feedrate'];
   $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
-  system($cmd);
+  exec($cmd);
   sleep(2);
   $pcmd ="G1Z".($coord['Z'])."F".$_SESSION['labbotprogram']['feedrate'];
   $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
-  system($cmd);
+  exec($cmd);
+  echo "<meta http-equiv='refresh' content='0'>";
 }?>
 
 <? if(isset($_POST['gotowaste'])){
@@ -45,16 +47,16 @@
  } 
   $pcmd = "G1Z".($coord['ztrav']."F".$_SESSION['labbotprogram']['feedrate']);
   $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
-  system($cmd);
+  exec($cmd);
   $row = 1;
   if(!(isset($_SESSION['labbotprogram']['feedrate']))){ $_SESSION['labbotprogram']['feedrate']  = 3000; }
    $pcmd = "G1X".($coord['posx']+$coord['marginx']+(($coord['shimx']/$coord['wellrow'])*($row-1)))."Y".($coord['posy']+($coord['wellrowsp']*($row-1))+$coord['marginy'] + ($coord['shimy']/$row)*($row-1))."F".$_SESSION['labbotprogram']['feedrate'];
   $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
-  system($cmd);
+  exec($cmd);
   sleep(2);
   $pcmd ="G1Z".($coord['Z'])."F".$_SESSION['labbotprogram']['feedrate'];
   $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
-  system($cmd);
+  exec($cmd);
 }?>
 
 
@@ -64,24 +66,31 @@
    $coord = $tt;
   }
  } 
+  if(!(isset($_SESSION['labbotprogram']['feedrate']))){ $_SESSION['labbotprogram']['feedrate']  = 3000; }
+  if(!(isset($_SESSION['dryrefnum']))){ $_SESSION['dryrefnum']  = 0; }
   $pcmd = "G1Z".($coord['ztrav']."F".$_SESSION['labbotprogram']['feedrate']);
   $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
+  exec($cmd);
   $row = 1;
-  if(!(isset($_SESSION['labbotprogram']['feedrate']))){ $_SESSION['labbotprogram']['feedrate']  = 3000; }
-   $pcmd = "G1X".($coord['posx']+$coord['marginx']+(($coord['shimx']/$coord['wellrow'])*($row-1)))."Y".($coord['posy']+($coord['wellrowsp']*($row-1))+$coord['marginy'] + ($coord['shimy']/$row)*($row-1))."F".$_SESSION['labbotprogram']['feedrate'];
-  $cmd = 'mosquitto_pub -t "labbot" -m "'.$cmd.'"';
-  system($cmd);
+  $pcmd = "G1X".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['x'])."Y".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['y'])."F".$_SESSION['labbotprogram']['feedrate'];
+  $_SESSION['dryrefnum'] = $_SESSION['dryrefnum'] + 1;
+  $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
+  exec($cmd);
   sleep(2);
   $pcmd ="G1Z".($coord['Z'])."F".$_SESSION['labbotprogram']['feedrate'];
   $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
-  system($cmd);
+  exec($cmd);
   if($_POST['drypadtime'] > 0){
    $_SESSION['drypadtime'] = $_POST['drypadtime'];
    sleep($_SESSION['drypadtime']);
    $pcmd ="G1Z".($coord['Z'])."F".$_SESSION['labbotprogram']['feedrate'];
    $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
-   system($cmd);
+   exec($cmd);
   }
+  sleep(0.5);
+  $pcmd ="G1Z".($coord['ztrav'])."F".$_SESSION['labbotprogram']['feedrate'];
+  $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
+  exec($cmd);
 }?>
 
 
@@ -199,7 +208,7 @@
 }
 ?>
 
-
+</form>
 
 
 <div class="row">
@@ -287,13 +296,13 @@
 </tr>
 <tr>
 <td>
-<br><button type="submit" name=gotowast value="gotowash"  class="btn btn-primary btn-xs">Go to wash</button><br>
+<br><button type="submit" name=gotowash value="gotowash"  class="btn btn-primary btn-xs">Go to wash</button><br>
 </td>
 <!--<td align=center>&nbsp;&nbsp;&nbsp;</td>-->
 <td align=center>
-<br><button type="submit" name=gotowast value="gotowaste"  class="btn btn-primary btn-xs">Go to waste</button><br>
+<br><button type="submit" name=gotowaste value="gotowaste"  class="btn btn-primary btn-xs">Go to waste</button><br>
 </td>
-<td><br><button type="submit" name=gotowast value="gotodry"  class="btn btn-primary btn-xs">Go to dry</button>
+<td><br><button type="submit" name=gotodry value="gotodry"  class="btn btn-primary btn-xs">Go to dry</button>
 </td></tr>
 </table>
 </form>
@@ -315,7 +324,9 @@
 <? } else { ?>
 <button type="submit" name=pcvoff value="pcvoff"  class="btn btn-danger btn-xs">PCV off</button>
 <? } ?>
+</form>
 </div>
+
 <div class="col-sm-4">
 <form action=<?=$_SERVER['PHP_SELF']?> method=post><font size=2>
 <? if(!isset($_SESSION['labbot3d']['manpcv'])){$_SESSION['labbot3d']['manpcv'] = 0;}?>

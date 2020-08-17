@@ -99,6 +99,7 @@ if(empty($pids)) { ?>
  <form action=<?=$_SERVER['PHP_SELF']?> method=post>
  <button type="submit" name=disconnectsub class="btn btn-danger">Disconnect</button><br><br>
 </form>
+ <h2>Interactive</h2>
 <? include('pronterface.panel.inc.php'); ?>
 <hr>
 <? include('microfluidics.inc.php'); ?>

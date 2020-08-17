@@ -662,6 +662,8 @@ def on_message(client, userdata, message):
       leveldisplay(aser,cmd)
     if cmd == "M105":
       gettemperature(dser)
+    if re.match('sg[1|2].*',cmd):
+      sser.write(re.sub('^s', '', cmd).encode()+"\n".encode())
     if re.match('TG1.*',cmd):
       print("calling the timed position move")
       #movetopos(dser,cmd)
