@@ -1,1 +1,1 @@
-{"program":["\/\/motion waste station zh 0 row 1 F3000\r","G1Z25F3000\r","G1X103Y28F3000\r","G1Z4F3000\r",""]}
+{"program":["\/\/wash 1 on\r","wasteon_3\r","\/\/wash 1 off\r","wasteoff_3\r",""]}

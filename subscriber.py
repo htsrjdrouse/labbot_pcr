@@ -109,8 +109,24 @@ def runeachmacrocmd(cmd,dser,aser,kit):
     #print("position is called")
     gg = getposition(dser)
     upublisher(cmd)
-   if re.match("^[wash|waste|pcv].*", cmd):
-     aser.write(cmd.encode()+"\n".encode())
+   if re.match("^[wash|pcv].*", cmd):
+     if re.match("^.*_.*$", cmd):
+        (pcmd, tme) = re.split("_", cmd)
+        aser.write(pcmd.encode()+"\n".encode())
+        time.sleep(float(tme))
+     else:
+        aser.write(cmd.encode()+"\n".encode())
+     upublisher(cmd)
+   if re.match("^waste.*", cmd):
+     print("waste called")
+     cmd = re.sub("waste", "dry", cmd)
+     print(cmd)
+     if re.match("^.*_.*$", cmd):
+        (pcmd, tme) = re.split("_", cmd)
+        aser.write(pcmd.encode()+"\n".encode())
+        time.sleep(float(tme))
+     else:
+        aser.write(cmd.encode()+"\n".encode())
      upublisher(cmd)
    if re.match("^//",cmd):
      upublisher(cmd)
@@ -716,11 +732,11 @@ time.sleep(0.5)
 dser.write(b'M305 P2 R4700 T100000 B4388\n')
 time.sleep(0.5)
 dser.write(b'M307 H1 A240 C640 D5.5 V12\n')
-time.sleep(0.5)
+time.sleep(1)
 dser.write(b'M307 H2 A240 C640 D5.5 V12\n')
-time.sleep(0.5)
+time.sleep(1)
 aser.write(b'heatoff\n')
-time.sleep(0.5)
+time.sleep(1)
 
 
 

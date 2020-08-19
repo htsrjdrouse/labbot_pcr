@@ -1,1 +1,1 @@
-{"1":{"tasktype":"motion","task":null,"object":"waste station","feedrate":"3000","row":"1","zheight":"0","mesg":"motion waste station zh 0 row 1 F3000"}}
+[{"tasktype":"gpio","plug":"1","onoff":"on","magnitude":"255","temperature":null,"thermistor":null,"mesg":"wash 1 on"},{"tasktype":"gpio","plug":"1","onoff":"off","magnitude":"255","temperature":null,"thermistor":null,"mesg":"wash 1 off"}]
