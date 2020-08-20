@@ -93,19 +93,6 @@
   exec($cmd);
 }?>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 <? if(isset($_POST['pcvon'])){
  $_SESSION['labbot3d']['pcvon'] = 1;
  $cmd = 'mosquitto_pub -t "labbot" -m "pcvon"';
@@ -150,24 +137,32 @@
  $_SESSION['labbot3d']['washon'] = 1;
  $cmd = 'mosquitto_pub -t "labbot" -m "washon"';
  exec($cmd);
+ $jsonmicrofl['wash']['on'] = 1;
+ file_put_contents('microfluidics.json', json_encode($jsonmicrofl));
  echo "<meta http-equiv='refresh' content='0'>";
 } ?>
 <? if(isset($_POST['washoff'])){
  $_SESSION['labbot3d']['washon'] = 0;
  $cmd = 'mosquitto_pub -t "labbot" -m "washoff"';
  exec($cmd);
+ $jsonmicrofl['wash']['on'] = 0;
+ file_put_contents('microfluidics.json', json_encode($jsonmicrofl));
  echo "<meta http-equiv='refresh' content='0'>";
 } ?>
 <? if(isset($_POST['wasteon'])){
  $_SESSION['labbot3d']['wasteon'] = 1;
  $cmd = 'mosquitto_pub -t "labbot" -m "wasteon"';
  exec($cmd);
+ $jsonmicrofl['waste']['on'] = 1;
+ file_put_contents('microfluidics.json', json_encode($jsonmicrofl));
  echo "<meta http-equiv='refresh' content='0'>";
 } ?>
 <? if(isset($_POST['wasteoff'])){
  $_SESSION['labbot3d']['wasteon'] = 0;
  $cmd = 'mosquitto_pub -t "labbot" -m "wasteoff"';
  exec($cmd);
+ $jsonmicrofl['waste']['on'] = 0;
+ file_put_contents('microfluidics.json', json_encode($jsonmicrofl));
  echo "<meta http-equiv='refresh' content='0'>";
 } ?>
 
@@ -206,7 +201,6 @@
 ?>
 
 
-<?  $statusjson = json_decode(file_get_contents('status.json'), true); ?>
 
 <div class="row">
 <form action=<?=$_SERVER['PHP_SELF']?> method=post>
@@ -274,13 +268,13 @@
 <? if(!isset($_SESSION['labbot3d']['wasteon'])){ $_SESSION['labbot3d']['dryon'] = 0; } ?>
 <? if(!isset($_SESSION['labbot3d']['editwashdry'])){ $_SESSION['labbot3d']['editwashdry'] = 0; } ?>
 <table><tr><td align=center>
-<? if($_SESSION['labbot3d']['washon'] == 0) { ?>
+<? if($jsonmicrofl['wash']['on'] == 0) { ?>
 <button type="submit" name=washon value="washon"  class="btn btn-warning btn-xs">Wash on</button>
 <? } else { ?>
 <button type="submit" name=washoff value="washoff"  class="btn btn-danger btn-xs">Wash off</button>
 <? } ?>
 </td><td align=center>
-<? if($_SESSION['labbot3d']['wasteon'] == 0) { ?>
+<? if($jsonmicrofl['waste']['on'] == 0) { ?>
 <button type="submit" name=wasteon value="wasteon"  class="btn btn-success btn-xs">Waste on</button>
 <? } else { ?>
 <button type="submit" name=wasteoff value="wasteoff"  class="btn btn-danger btn-xs">Waste off</button>
