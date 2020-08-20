@@ -198,7 +198,7 @@
   if ($labbotprogramjson['plug'] == "1"){
    $line  = "wash";
   } else if ($labbotprogramjson['plug'] == "2"){
-   $line  = "dry";
+   $line  = "waste";
   } else if ($labbotprogramjson['plug'] == "3"){
    $line  = "pcv";
   } else if ($labbotprogramjson['plug'] == "4"){
@@ -212,6 +212,15 @@
  }
    */
   $line = $line.$labbotprogramjson['onoff'];
+  if ($line == "washon"){ $_SESSION['labbot3d']['washon'] = 1; }
+  if ($line == "washoff"){ $_SESSION['labbot3d']['washoff'] = 0; }
+  if ($line == "wasteon"){ $_SESSION['labbot3d']['dryon'] = 1; }
+  if ($line == "wasteoff"){ $_SESSION['labbot3d']['dryon'] = 0; }
+  if ($line == "pcvon"){ $_SESSION['labbot3d']['pcvon'] = 1; }
+  if ($line == "pcvoff"){ $_SESSION['labbot3d']['pcvoff'] = 0; }
+
+ 
+
  //echo $line."<br>";
  array_push($cmdlist,$line); 
  return($cmdlist);

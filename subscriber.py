@@ -70,6 +70,7 @@ def runeachmacrocmd(cmd,dser,aser,kit):
   mesg = json.load(nx)
   nx.close()
   sim = 0
+  print(cmd)
   if len(cmd)>0:
    if re.match("^G1",cmd):
     gss = re.split("_", cmd)
@@ -109,24 +110,33 @@ def runeachmacrocmd(cmd,dser,aser,kit):
     #print("position is called")
     gg = getposition(dser)
     upublisher(cmd)
-   if re.match("^[wash|pcv].*", cmd):
-     if re.match("^.*_.*$", cmd):
-        (pcmd, tme) = re.split("_", cmd)
+   if re.match("^wash.*", cmd):
+     acmd = cmd
+     if re.match("^.*_.*$", acmd):
+        (pcmd, tme) = re.split("_", acmd)
+        aser.write(pcmd.encode()+"\n".encode())
+        time.sleep(float(tme))
+     else:
+        aser.write(cmd.encode()+"\n".encode())
+     upublisher(cmd)
+   if re.match("^pcv.*", cmd):
+     acmd = cmd
+     if re.match("^.*_.*$", acmd):
+        (pcmd, tme) = re.split("_", acmd)
         aser.write(pcmd.encode()+"\n".encode())
         time.sleep(float(tme))
      else:
         aser.write(cmd.encode()+"\n".encode())
      upublisher(cmd)
    if re.match("^waste.*", cmd):
-     print("waste called")
-     cmd = re.sub("waste", "dry", cmd)
+     gcmd = re.sub("waste", "dry", cmd)
      print(cmd)
-     if re.match("^.*_.*$", cmd):
-        (pcmd, tme) = re.split("_", cmd)
+     if re.match("^.*_.*$", gcmd):
+        (pcmd, tme) = re.split("_", gcmd)
         aser.write(pcmd.encode()+"\n".encode())
         time.sleep(float(tme))
      else:
-        aser.write(cmd.encode()+"\n".encode())
+        aser.write(gcmd.encode()+"\n".encode())
      upublisher(cmd)
    if re.match("^//",cmd):
      upublisher(cmd)
@@ -134,7 +144,7 @@ def runeachmacrocmd(cmd,dser,aser,kit):
      upublisher(cmd)
      snap(cmd,mesg['cameraip'])
    if re.match("^valve.*",cmd):
-     #print(cmd)
+     print(cmd)
      (v,pvalves,pos) = re.split('-', cmd)
      valves = re.split('_',pvalves) 
      #print(valves)
@@ -152,7 +162,6 @@ def runeachmacrocmd(cmd,dser,aser,kit):
      dser.write(cmd.encode()+"\n".encode())
    if re.match("^sg.*",cmd):
      ps,tt = re.split("_", re.sub("^s", "", cmd))
-     print(ps)
      sser.write(ps.encode()+"\n".encode())
      time.sleep(float(tt))
 
