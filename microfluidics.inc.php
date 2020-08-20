@@ -173,10 +173,7 @@
 
 
 <? if(isset($_POST['govalvepos'])){
- $jsonmicrofl['valve'][$_POST['selvalve']]['output'] = $_POST['output'];  
- $jsonmicrofl['valve'][$_POST['selvalve']]['input'] = $_POST['input'];  
- $jsonmicrofl['valve'][$_POST['selvalve']]['bypass'] = $_POST['bypass'];  
- $jsonmicrofl['valve'][$_POST['selvalve']]['close'] = $_POST['close'];  
+ $jsonmicrofl['valvepos'] = $_POST['valvepos'];  
  $opt = array('output','input','bypass','close');
  foreach($opt as $oo){
    if($_POST[$oo] == "checked"){
@@ -208,8 +205,8 @@
 }
 ?>
 
-</form>
 
+<?  $statusjson = json_decode(file_get_contents('status.json'), true); ?>
 
 <div class="row">
 <form action=<?=$_SERVER['PHP_SELF']?> method=post>

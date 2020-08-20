@@ -110,7 +110,12 @@
 <? function valve($cmdlist,$labbotprogramjson){
   //valve-1.1.1.1.1.1.1.1-input
   //$line = 'valve'-<?=preg_replace("/valve/", "", $labbotprogramjson['valvepos']); 
-  $line = 'valve-'.$labbotprogramjson['valvelist'].'-'.preg_replace("/valve/", "", $labbotprogramjson['valvepos']);
+	$line = 'valve-'.$labbotprogramjson['valvelist'].'-'.preg_replace("/valve/", "", $labbotprogramjson['valvepos']);
+  $jsonmicrofl = json_decode(file_get_contents('microfluidics.json'), true);
+  $jsonmicrofl['tiplist'] = $labbotprogramjson['valvelist']; 
+  $jsonmicrofl['valvepos'] = $labbotprogramjson['position']; 
+  file_put_contents('microfluidics.json', json_encode($jsonmicrofl));
+
   array_push($cmdlist, $line);
   return $cmdlist; 
  } ?>
@@ -195,6 +200,7 @@
 
 <? //wash, dry, pcv ?>
 <? function gpio($cmdlist,$labbotprogramjson){
+  $jsonmicrofl = json_decode(file_get_contents('microfluidics.json'), true);
   if ($labbotprogramjson['plug'] == "1"){
    $line  = "wash";
   } else if ($labbotprogramjson['plug'] == "2"){
@@ -212,14 +218,13 @@
  }
    */
   $line = $line.$labbotprogramjson['onoff'];
-  if ($line == "washon"){ $_SESSION['labbot3d']['washon'] = 1; }
-  if ($line == "washoff"){ $_SESSION['labbot3d']['washoff'] = 0; }
-  if ($line == "wasteon"){ $_SESSION['labbot3d']['dryon'] = 1; }
-  if ($line == "wasteoff"){ $_SESSION['labbot3d']['dryon'] = 0; }
-  if ($line == "pcvon"){ $_SESSION['labbot3d']['pcvon'] = 1; }
-  if ($line == "pcvoff"){ $_SESSION['labbot3d']['pcvoff'] = 0; }
-
- 
+  if ($line == "washon"){ $_SESSION['labbot3d']['washon'] = 1; $jsonmicrofl['wash']['on'] = 1;}
+  if ($line == "washoff"){ $_SESSION['labbot3d']['washon'] = 0; $jsonmicrofl['wash']['on'] = 0;}
+  if ($line == "wasteon"){ $_SESSION['labbot3d']['dryon'] = 1; $jsonmicrofl['waste']['on'] = 1;}
+  if ($line == "wasteoff"){ $_SESSION['labbot3d']['dryon'] = 0; $jsonmicrofl['waste']['on'] = 0;}
+  if ($line == "pcvon"){ $_SESSION['labbot3d']['pcvon'] = 1; $jsonmicrofl['pcv']['on'] = 1;}
+  if ($line == "pcvoff"){ $_SESSION['labbot3d']['pcvon'] = 0; $jsonmicrofl['pcv']['on'] = 0;}
+  file_put_contents('microfluidics.json', json_encode($jsonmicrofl));
 
  //echo $line."<br>";
  array_push($cmdlist,$line); 
