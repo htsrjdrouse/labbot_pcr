@@ -361,7 +361,7 @@ def runmacro(dser,aser,kit,sser):
    coordlog['Y'] =[]
    coordlog['Z'] =[]
    coordlog['E'] =[]
-   #resets teh schedular
+   #resets the schedular
    writeschedularjson(coordlog)
    taskjob = readtaskjobjson()
    reformatmacro = gcodesplitter(taskjob['program']) 
