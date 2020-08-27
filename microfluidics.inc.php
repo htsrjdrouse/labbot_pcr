@@ -95,6 +95,9 @@
 
 <? if(isset($_POST['pcvon'])){
  $_SESSION['labbot3d']['pcvon'] = 1;
+ $cmd = 'mosquitto_pub -t "labbot" -m "manpcv"';
+ exec($cmd);
+ sleep(1);
  $cmd = 'mosquitto_pub -t "labbot" -m "pcvon"';
  exec($cmd);
  echo "<meta http-equiv='refresh' content='0'>";
@@ -306,6 +309,7 @@
 </div>
 
 <div class="row">
+<form action=<?=$_SERVER['PHP_SELF']?> method=post>
 <!--<div class="col-sm-1"></div> -->
 <div class="col-sm-3">
 <b>Pressure</b><br><br>
