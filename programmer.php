@@ -289,7 +289,10 @@ $(document).ready(function(){
  </div>  
  <div class="col-sm-8">
  <input type="button" value="Up" style="background-color: white;color:black;border: 2px solid #4CAF50;border-radius: 12px;">
- <input type="button" value="Down" style="background-color: white;color:black;border: 2px solid #FF6347;border-radius: 12px;"><br>
+ <input type="button" value="Down" style="background-color: white;color:black;border: 2px solid #FF6347;border-radius: 12px;">
+&nbsp;&nbsp;&nbsp;&nbsp;
+<b>Restart subscriber: </b><input type=checkbox name=restart>
+<br>
  <? $size = count($labbotprogramjson);
    if ($size > 9) {$size = 10; }
   ?>
@@ -300,5 +303,6 @@ $(document).ready(function(){
  </select>
 <? }?>
  </div>
+
 </div>
 </form>

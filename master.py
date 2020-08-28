@@ -63,6 +63,11 @@ def on_message(client, userdata, message):
       killproc('leveldisplay.py')
       time.sleep(0.5)
       killproc('temperaturedisplay.py')
+    if cmd == "restart":
+      killproc('subscriber.py')
+      time.sleep(2)
+      subprocess.Popen(["sudo","python3", "/home/pi/labbot/subscriber.py"]).pid
+      
     if cmd == "kill positiondisplay":
       killproc('positiondisplay.py')
     if cmd == "run positiondisplay":

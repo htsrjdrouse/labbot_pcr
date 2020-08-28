@@ -164,6 +164,11 @@ def runeachmacrocmd(cmd,dser,aser,kit):
      ps,tt = re.split("_", re.sub("^s", "", cmd))
      sser.write(ps.encode()+"\n".encode())
      time.sleep(float(tt))
+   if cmd == "restart":
+     cmd = 'mosquitto_pub -t "controllabbot" -m "restart"'
+     os.system(cmd)
+  
+
 
 def putmacrolinestogether(reformatmacro):
  macrorunready = []

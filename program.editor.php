@@ -380,6 +380,9 @@ if (isset($_POST['editmacro'])){
     $cmdlist = heatblock($cmdlist, $labbotprogramjson[$mm]);
   }
  }
+ if ($_POST['restart']){
+   array_push($cmdlist,'restart');
+ }
  $cc = array("cmdlist"=>$cmdlist);
  $_SESSION['cmdlist'] = $cmdlist;
  $_SESSION['labbot']['editprogram'] = 1;
