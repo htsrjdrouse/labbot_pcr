@@ -1,6 +1,5 @@
-LabBot PCR imager prototype
+Labautobox 
 
-This is the repo for the control software. 
+This is the repo for the control software for the labautobox. 
 
 
-# labbotpcr_app

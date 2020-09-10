@@ -13,9 +13,9 @@ def whatstheports():
  oo = re.split('/dev', output)
  ports = {}
  for i in oo:
-    if re.match('^.*Duet.*', i):
+    if re.match('^.*Smoothie.*', i):
         port = re.match('^.*tty(.*) .*', i)
-        ports['duet'] = re.split(' ', port.group(1))[0]
+        ports['smoothie'] = re.split(' ', port.group(1))[0]
     if re.match('^.*Arduino Micro.*', i):
         port = re.match('^.*tty(.*) .*', i)
         #ports['microfluidics'] = re.split(' ',port.group(1))[0]
@@ -52,14 +52,16 @@ def openport(prt):
 
 ports = whatstheports()
 print(ports)
-dser = openport(ports['duet'])
-sser = openport(ports['syringe'])
-time.sleep(3)
+#dser = openport(ports['smoothie'])
+#sser = openport(ports['syringe'])
+#time.sleep(3)
 #dser.write(b'M106 P0 I1 F25000 \n')
 
 #dser.write(b'M106 P0 I0 F25000 \n')
 #dser.write(b'M106 P0 I1 F25000 \n')
+'''
 dser.write(b'M563 P1 D1 H2\n')
 dser.write(b'M305 P2 R4700 T100000 B4388\n')
 dser.write(b'M307 H1 A240 C640 D5.5 V12\n')
 dser.write(b'M307 H2 A240 C640 D5.5 V12\n')
+'''

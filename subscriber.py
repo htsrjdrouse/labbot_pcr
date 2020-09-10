@@ -7,7 +7,17 @@ import json
 import operator
 from adafruit_servokit import ServoKit
 
-
+def touchdry(cmd):
+  [p,x,y,z,ztrav,f,t] = re.split("_", cmd)
+  mcmd = "G1Z"+ztrav+"F"+f
+  dser.write(mcmd.encode()+"\n".encode())
+  mcmd = "G1X"+x+"Y"+y+"F"+f
+  dser.write(mcmd.encode()+"\n".encode())
+  mcmd ="G1Z"+z+"F"+f
+  dser.write(mcmd.encode()+"\n".encode())
+  time.sleep(float(t))  
+  mcmd = "G1Z"+ztrav+"F"+f
+  dser.write(mcmd.encode()+"\n".encode())
 
 def snap(cmd,cameraip):
   d = datetime.datetime.today()
@@ -31,7 +41,8 @@ def snap(cmd,cameraip):
 def servoset():
  kit = ServoKit(channels=16)
  for i in range(0,8):
-  kit.servo[i].set_pulse_width_range(500, 2800) 
+  #kit.servo[i].set_pulse_width_range(500, 2800) 
+  kit.servo[i].set_pulse_width_range(800, 2650) 
  return kit
 
 
@@ -41,8 +52,8 @@ def servo(valves,pos,kit):
   #print(valves)
   ps ={}
   ps['input'] = 0
-  ps['output'] = 90
-  ps['bypass'] = 60
+  ps['output'] = 75
+  ps['bypass'] = 30
   ps['close'] = 160
   ct = 0
   #print("just before loop")
@@ -65,7 +76,7 @@ def labbotrunning(pp):
 
 
 #runeachmacrocmd(i,dser,aser)
-def runeachmacrocmd(cmd,dser,aser,kit):
+def runeachmacrocmd(cmd,dser,kit):
   nx = open('nx.imgdataset.json')
   mesg = json.load(nx)
   nx.close()
@@ -111,6 +122,9 @@ def runeachmacrocmd(cmd,dser,aser,kit):
     gg = getposition(dser)
     upublisher(cmd)
    if re.match("^wash.*", cmd):
+     pcmd = 'mosquitto_pub -t "labbotmicrofl" -m "'+cmd+'"'
+     os.system(pcmd)
+     '''
      acmd = cmd
      if re.match("^.*_.*$", acmd):
         (pcmd, tme) = re.split("_", acmd)
@@ -119,7 +133,11 @@ def runeachmacrocmd(cmd,dser,aser,kit):
      else:
         aser.write(cmd.encode()+"\n".encode())
      upublisher(cmd)
+     '''
    if re.match("^pcv.*", cmd):
+     pcmd = 'mosquitto_pub -t "labbotmicrofl" -m "'+cmd+'"'
+     os.system(pcmd)
+     '''
      acmd = cmd
      if re.match("^.*_.*$", acmd):
         (pcmd, tme) = re.split("_", acmd)
@@ -128,7 +146,11 @@ def runeachmacrocmd(cmd,dser,aser,kit):
      else:
         aser.write(cmd.encode()+"\n".encode())
      upublisher(cmd)
+     '''
    if re.match("^waste.*", cmd):
+     pcmd = 'mosquitto_pub -t "labbotmicrofl" -m "'+cmd+'"'
+     os.system(pcmd)
+     '''
      gcmd = re.sub("waste", "dry", cmd)
      print(cmd)
      if re.match("^.*_.*$", gcmd):
@@ -138,6 +160,7 @@ def runeachmacrocmd(cmd,dser,aser,kit):
      else:
         aser.write(gcmd.encode()+"\n".encode())
      upublisher(cmd)
+     '''
    if re.match("^//",cmd):
      upublisher(cmd)
    if re.match("^snap.*",cmd):
@@ -482,14 +505,6 @@ def verifypos(dser,cmd):
  return moving
 
 
-
-def leveldisplay(aser,cmd):
-  aser.write(cmd.encode()+"\n".encode())
-  temp = aser.readlines()
-  temp = (temp[0].decode().rstrip()) 
-  cmd = 'mosquitto_pub -t "temp" -m "'+temp+'"'
-  os.system(cmd)
-
 def gettemperature(dser):
  dser.write(b'M105\n')
  temp = dser.readlines()
@@ -498,6 +513,10 @@ def gettemperature(dser):
  cmd = 'mosquitto_pub -t "blocktemp" -m "'+cc+'"'
  os.system(cmd)
 
+
+
+'''
+# This one is for the duet
 def getposition(dser):
  dser.write(b'M114\n')
  pos = dser.readlines()
@@ -534,7 +553,46 @@ def getposition(dser):
  nx.write(nxdatar)
  nx.close()
  return pos
+'''
 
+# This one is for the smoothie
+def getposition(dser):
+ dser.write(b'M114\n')
+ pos = dser.readlines()
+ #[b'ok C: X:0.0000 Y:0.0000 Z:0.0000 E:0.000 \r\n']
+ #pos = dser.readlines().decode()
+ #['X:0.000 Y:0.000 Z:0.000 E:0.000 E0:0.0 E1:0.0 E2:0.0 E3:0.0 E4:0.0 E5:0.0 E6:0.0 E7:0.0 E8:0.0 Count 0 0 0 Machine 0.000 0.000 0.000 Bed comp 0.000\n', b'ok\n']
+ lbpos = {}
+ for i in pos:
+     i = i.decode()
+     if re.match('^.*X:.*Y:.*Z:.*E.*', i):
+         bb = re.match('^.*X:(.*) Y:(.*) Z:(.*) E:(.*) .*', i)
+         lbpos['X'] = float(bb.group(1))
+         lbpos['Y'] = float(bb.group(2))
+         lbpos['Z'] = float(bb.group(3))
+         lbpos['E'] = float(bb.group(4))
+ lbposdatar = json.dumps(lbpos)
+ pcmd = 'X'+str(lbpos['X'])+' Y'+str(lbpos['Y'])+' Z'+str(lbpos['Z'])+' E'+str(lbpos['E'])
+ cmd = 'mosquitto_pub -t "testtopic" -m "'+pcmd+'"'
+ os.system(cmd)
+ nx = open('nx.imgdataset.json')
+ nxdata = json.load(nx)
+ nx.close()
+ if re.match('^.*F', nxdata['smoothielastcommand']):
+     ff = re.match('^.*F(.*)', nxdata['smoothielastcommand'])
+     feed = ff.group(1)
+ else:
+     feed = nxdata['xyjogfeed']
+ nxdata['smoothielastcommand'] = 'G1X'+str(lbpos['X'])+'Y'+str(lbpos['Y'])+'Z'+str(lbpos['Z'])+'F'+feed
+ nxdata['currcoord']['X'] = lbpos['X'];
+ nxdata['currcoord']['Y'] = lbpos['Y'];
+ nxdata['currcoord']['Z'] = lbpos['Z'];
+ nxdata['currcoord']['E'] = lbpos['E'];
+ nxdatar = json.dumps(nxdata)
+ nx = open('nx.imgdataset.json','w')
+ nx.write(nxdatar)
+ nx.close()
+ return pos
 
 
 
@@ -564,9 +622,9 @@ def whatstheports():
  oo = re.split('/dev', output)
  ports = {}
  for i in oo:
-    if re.match('^.*Duet.*', i):
+    if re.match('^.*Smoothie.*', i):
         port = re.match('^.*tty(.*) .*', i)
-        ports['duet'] = re.split(' ', port.group(1))[0]
+        ports['smoothie'] = re.split(' ', port.group(1))[0]
     if re.match('^.*Arduino Micro.*', i):
         port = re.match('^.*tty(.*) .*', i)
         #ports['microfluidics'] = re.split(' ',port.group(1))[0]
@@ -583,16 +641,6 @@ def whatstheports():
             ports['microfluidics'] = pport
         ser.close()
  return ports
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -623,10 +671,6 @@ def getipaddr(dser):
 ## mqtt message handler ##
 def on_message(client, userdata, message):
     cmd = str(message.payload.decode("utf-8"))
-    if re.match("^setval.*", cmd):
-      aser.write(cmd.encode())
-    if re.match("^heater.*", cmd):
-      aser.write(cmd.encode())
     if re.match("^G[1|28].*", cmd):
       coord = jogcoordparser(cmd)
       labbotrunning(1)
@@ -656,44 +700,13 @@ def on_message(client, userdata, message):
       dser.write(b'M106 P0 I1 F25000 \n')
     if cmd == "blueledoff":
       dser.write(b'M106 P0 I0 F25000 \n')
-    if cmd == "washon":
-      #print(cmd)
-      aser.write(cmd.encode()+"\n".encode())
-    if cmd == "washoff":
-      #print(cmd)
-      aser.write(cmd.encode()+"\n".encode())
-    if cmd == "wasteon":
-      #print(cmd)
-      aser.write("dryon".encode()+"\n".encode())
-    if cmd == "wasteoff":
-      #print(cmd)
-      aser.write("dryoff".encode()+"\n".encode())
-    if cmd == "pcvoff":
-      #print(cmd)
-      aser.write(cmd.encode()+"\n".encode())
-    if cmd == "pcvon":
-      #print(cmd)
-      aser.write(cmd.encode()+"\n".encode())
-    if cmd == "manpcv":
-      aser.write("setlevelval 0".encode()+"\n".encode())
-      time.sleep(0.5)
-      aser.write("manpcv".encode()+"\n".encode())
-    if cmd == "feedbackpcv":
-      #print(cmd)
-      time.sleep(0.5)
-      aser.write(cmd.encode()+"\n".encode())
-    if cmd == "heaton":
-      #print(cmd)
-      aser.write(cmd.encode()+"\n".encode())
-    if cmd == "heatoff":
-      #print(cmd)
-      aser.write(cmd.encode()+"\n".encode())
-    if cmd == "readlevel":
-      leveldisplay(aser,cmd)
     if cmd == "M105":
       gettemperature(dser)
     if re.match('sg[1|2].*',cmd):
       sser.write(re.sub('^s', '', cmd).encode()+"\n".encode())
+    if re.match('touch.*',cmd):
+        touchdry(cmd)
+
     if re.match('TG1.*',cmd):
       print("calling the timed position move")
       #movetopos(dser,cmd)
@@ -706,12 +719,6 @@ def on_message(client, userdata, message):
      except:
       pass
       #print("can not send a mqtt")
-    if re.match("setlevelval.*", cmd):
-      print(cmd)
-      aser.write(cmd.encode()+"\n".encode())
-    if re.match("heatval.*", cmd):
-      print(cmd)
-      aser.write(cmd.encode()+"\n".encode())
     if re.match("valve.*", cmd):
       (v,pvalves,pos) = re.split('-', cmd)
       valves = re.split('\.',pvalves) 
@@ -735,11 +742,11 @@ def on_message(client, userdata, message):
       #print(cccmd)
       os.system(cccmd)
 
-
 ports = whatstheports()
-aser = openport(ports['microfluidics'])
-dser = openport(ports['duet'])
+dser = openport(ports['smoothie'])
 sser = openport(ports['syringe'])
+
+'''
 time.sleep(1)
 dser.write(b'M563 P1 D1 H2\n')
 time.sleep(0.5)
@@ -749,11 +756,7 @@ dser.write(b'M307 H1 A240 C640 D5.5 V12\n')
 time.sleep(1)
 dser.write(b'M307 H2 A240 C640 D5.5 V12\n')
 time.sleep(1)
-aser.write(b'heatoff\n')
-time.sleep(1)
-
-
-
+'''
 kit = servoset()
 #runmacro(dser,aser)
 
